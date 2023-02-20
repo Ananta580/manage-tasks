@@ -30,7 +30,11 @@ export class TaskComponent {
     var index = tasks.findIndex((x) => x.id === id);
     tasks[index] ?? task;
     this.localStorage.tasks = tasks;
+
     this.localStorage.tasks$.next(tasks);
+    if (task?.done) {
+      this.localStorage.task_type = 'done';
+    }
     this.localStorage.changedType();
   }
 

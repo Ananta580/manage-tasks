@@ -1,4 +1,5 @@
 <section
+  *ngIf="(newTask$ | async) || (todoList$ | async).length > 0"
   class="flex m-6 rounded-md border-[2px] border-[#fafafa] border-collapse p-4 flex-col"
 >
   <section
