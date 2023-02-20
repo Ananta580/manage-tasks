@@ -1,0 +1,39 @@
+<section
+  class="flex m-6 rounded-md border-[2px] border-[#fafafa] border-collapse p-4 flex-col"
+>
+  <section
+    *ngIf="(newTask$ | async) === true"
+    class="px-2 py-3 flex justify-between cursor-pointer font-semibold text-[#545454] border-b-2 border-gray-100 last:border-none gap-4"
+  >
+    <input [(ngModel)]="taskName" class="w-full" placeholder="Your task" />
+    <div class="flex gap-4">
+      <button
+        (click)="saveTask()"
+        class="px-5 py-2 bg-blue-800 hover:bg-blue-700 text-white rounded-md"
+      >
+        Save
+      </button>
+      <button
+        (click)="cancelTask()"
+        class="px-5 py-2 border-[2px] border-blue-800 rounded-md"
+      >
+        Cancel
+      </button>
+    </div>
+  </section>
+  <ng-container *ngFor="let task of todoList$ | async">
+    <div
+      (click)="changedTask(task.id)"
+      class="px-2 py-3 flex justify-between cursor-pointer font-semibold text-[#545454] border-b-2 border-gray-100 last:border-none"
+    >
+      <p class="flex w-5/6">{{ task.title }}</p>
+      <div
+        [ngClass]="{
+          'border-[2px] border-gray-300': !task.done,
+          'border-[8px] border-green-300': task.done
+        }"
+        class="w-10 h-5 rounded-md"
+      ></div>
+    </div>
+  </ng-container>
+</section>
