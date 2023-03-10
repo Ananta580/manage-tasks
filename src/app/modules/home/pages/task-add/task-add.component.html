@@ -1,0 +1,60 @@
+<div class="flex items-center justify-center gap-6">
+  <div
+    class="m-6 w-3/6 flex flex-col gap-6 rounded-md p-6 border-[1px] bg-white shadow-sm"
+  >
+    <!-- First row -->
+    <div class="flex w-full gap-6">
+      <div class="flex w-full flex-col gap-2">
+        <label class="text-lg font-medium flex"
+          >Title
+          <div class="text-red-500 text-xs -mt-0 ml-2">(required*)</div></label
+        >
+        <input class="p-3 w-full" />
+      </div>
+      <div class="flex flex-col gap-2">
+        <label class="text-lg flex">Group </label>
+        <!-- This button triggers the overlay and is it's origin -->
+
+        <div
+          (click)="isOpen = !isOpen"
+          cdkOverlayOrigin
+          #trigger="cdkOverlayOrigin"
+          class="text-gray-300 w-[200px] p-3 border-[1px] border-gray-300 rounded-md cursor-pointer"
+        >
+          Select an option
+        </div>
+
+        <!-- This template displays the overlay content and is connected to the button -->
+        <ng-template
+          cdkConnectedOverlay
+          cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+          [cdkConnectedOverlayHasBackdrop]="true"
+          [cdkConnectedOverlayOrigin]="trigger"
+          [cdkConnectedOverlayOpen]="isOpen"
+          (backdropClick)="isOpen = false"
+        >
+          <ul class="bg-gray-50 m-2 shadow-sm rounded-sm min-w-[190px]">
+            <li class="p-3 cursor-pointer hover:bg-slate-100">None</li>
+            <li class="p-3 cursor-pointer hover:bg-slate-100">Item 1</li>
+            <li class="p-3 cursor-pointer hover:bg-slate-100">Item 2</li>
+            <li class="p-3 cursor-pointer hover:bg-slate-100">Item 3</li>
+            <li class="p-3 cursor-pointer hover:bg-slate-100">Add</li>
+          </ul>
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label class="text-lg">Description</label>
+      <textarea class="p-3" rows="4"></textarea>
+    </div>
+
+    <div>
+      <button
+        class="px-5 py-3 bg-black text-white rounded-md hover:bg-slate-700"
+      >
+        Create Task
+      </button>
+    </div>
+  </div>
+</div>

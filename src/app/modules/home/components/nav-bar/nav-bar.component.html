@@ -1,0 +1,41 @@
+<div
+  class="flex shadow-sm px-8 items-center justify-between bg-gradient-to-r from-blue-700 via-blue-500 to-blue-700"
+>
+  <h1 class="py-3 flex items-center gap-6">
+    <span
+      class="material-symbols-outlined cursor-pointer text-white text-2xl font-normal"
+    >
+      calendar_view_week
+    </span>
+    <span
+      routerLink="/app"
+      class="material-symbols-outlined cursor-pointer text-white text-2xl font-normal"
+    >
+      Home
+    </span>
+    <input id="search" placeholder="Search" class="p-2 px-3" />
+  </h1>
+  <div class="flex gap-2">
+    <button
+      routerLink="/app/task"
+      class="h-10 w-10 flex justify-center hover:bg-[#ebebeb] bg-white items-center hover:bg-[#ffffff44] rounded-full text-lg font-normal text-blue-600"
+    >
+      <span class="material-symbols-outlined">add</span>
+    </button>
+    <button
+      class="h-10 w-10 flex justify-center items-center hover:bg-[#ffffff44] rounded-full text-white text-lg font-normal"
+    >
+      <span class="material-symbols-outlined">notifications</span>
+    </button>
+    <button
+      class="h-10 w-10 flex justify-center items-center hover:bg-[#ffffff44] rounded-full text-white text-lg font-normal"
+    >
+      <span class="material-symbols-outlined">settings</span>
+    </button>
+    <button
+      class="h-10 w-10 flex justify-center items-center bg-gray-400 hover:bg-[#ffffff44] rounded-full text-white text-lg font-normal"
+    >
+      <span>A.P</span>
+    </button>
+  </div>
+</div>

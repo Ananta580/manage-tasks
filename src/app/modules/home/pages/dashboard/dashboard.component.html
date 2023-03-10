@@ -1,0 +1,76 @@
+<div class="flex gap-3">
+  <section
+    class="flex fixed flex-col w-auto min-w-[250px] bg-slate-100 justify-between pt-6 h-screen"
+  >
+    <div class="flex flex-col">
+      <div
+        (click)="changeTaskType(tab.key)"
+        *ngFor="let tab of tabs"
+        [ngClass]="
+          tab.key === (selectedTab$ | async) ? 'bg-slate-200' : 'text-slate-400'
+        "
+        class="p-3 mx-6 rounded-md cursor-pointer font-normal flex gap-2"
+      >
+        <span
+          class="material-symbols-outlined"
+          [ngClass]="tab.key === (selectedTab$ | async) ? 'fill' : ''"
+        >
+          {{ tab.icon }} </span
+        >{{ tab.title }}
+      </div>
+    </div>
+  </section>
+  <section
+    *ngIf="(newTask$ | async) || (todoList$ | async).length > 0"
+    class="flex m-6 w-full rounded-md border-[2px] border-[#fafafa] border-collapse p-4 flex-col"
+  >
+    <section
+      *ngIf="(newTask$ | async) === true"
+      class="px-2 py-3 flex justify-between cursor-pointer font-normal text-[#545454] border-b-2 border-gray-100 last:border-none gap-4"
+    >
+      <input [(ngModel)]="taskName" class="w-full" placeholder="Your task" />
+      <div class="flex gap-4">
+        <button
+          (click)="saveTask()"
+          class="px-5 py-2 bg-blue-800 hover:bg-blue-700 text-white rounded-md"
+        >
+          Save
+        </button>
+        <button
+          (click)="cancelTask()"
+          class="px-5 py-2 border-[2px] border-blue-800 rounded-md"
+        >
+          Cancel
+        </button>
+      </div>
+    </section>
+    <ng-container *ngFor="let task of todoList$ | async">
+      <div
+        (click)="changedTask(task.id)"
+        class="px-2 py-3 flex justify-between cursor-pointer font-normal text-[#545454] border-b-2 border-gray-100 last:border-none"
+      >
+        <p class="flex w-5/6">{{ task.title }}</p>
+        <div class="flex gap-3">
+          <span
+            class="material-symbols-outlined cursor-pointer"
+            [ngClass]="{
+              'fill text-blue-400': task.done,
+              'text-gray-600 hover:text-blue-400': !task.done
+            }"
+          >
+            {{ task.done ? "check_circle" : "radio_button_unchecked" }}
+          </span>
+
+          <span
+            class="material-symbols-outlined text-gray-500 cursor-pointer hover:text-green-500"
+            >edit</span
+          >
+          <span
+            class="material-symbols-outlined text-gray-500 cursor-pointer hover:text-red-500"
+            >delete</span
+          >
+        </div>
+      </div>
+    </ng-container>
+  </section>
+</div>

@@ -1,0 +1,15 @@
+input#search {
+  background-image: url(../../../../../assets/search.png);
+  background-position: 10px;
+  background-repeat: no-repeat;
+  text-indent: 40px;
+}
+
+::-webkit-input-placeholder {
+  color: rgb(183, 183, 183);
+}
+
+input#search:focus {
+  background-image: none;
+  text-indent: 0;
+}
