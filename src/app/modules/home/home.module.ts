@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { HomeRoutingModule } from './home-routing.module';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { HomeComponent } from './home.component';
@@ -26,6 +27,7 @@ import { SharedModule } from '../shared/shared.module';
     MatSelectModule,
     ReactiveFormsModule,
     FormsModule,
+    DragDropModule,
     SharedModule,
     OverlayModule,
     HomeRoutingModule,

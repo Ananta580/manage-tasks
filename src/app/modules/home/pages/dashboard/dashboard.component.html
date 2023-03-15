@@ -20,9 +20,14 @@
   </section>
 
   <section class="ml-[250px] p-6 flex w-full flex-col">
-    <ng-container *ngIf="(tasks$ | async)!.length > 0; else emptyTemplate">
+    <div
+      cdkDropList
+      (cdkDropListDropped)="drop($event)"
+      *ngIf="(tasks$ | async)!.length > 0; else emptyTemplate"
+    >
       <div
-        class="py-2 border-b-[1px] border-[#E2E2E2] flex w-full justify-between items-center"
+        cdkDrag
+        class="py-2 border-b-[1px] border-[#E2E2E2] flex w-full justify-between items-center bg-[#f9f9f9]"
         *ngFor="let task of tasks$ | async"
       >
         <div class="flex gap-3">
@@ -63,7 +68,7 @@
           </div>
         </div>
       </div>
-    </ng-container>
+    </div>
     <ng-template #emptyTemplate>
       <div
         class="text-gray-300 justify-center flex items-center flex-col gap-6 h-80 mr-10"

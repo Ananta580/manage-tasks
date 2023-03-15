@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, Observable } from 'rxjs';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
   DeleteTaskAction,
   EditTaskAction,
@@ -12,6 +13,7 @@ import { Task } from 'src/app/store/models/tasks';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
   tabs = [
@@ -60,4 +62,6 @@ export class DashboardComponent implements OnInit {
     const payload = id;
     this.store.dispatch(DeleteTaskAction({ payload }));
   }
+
+  drop(event: any) {}
 }
