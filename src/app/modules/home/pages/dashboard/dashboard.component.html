@@ -6,71 +6,77 @@
       <div
         (click)="changeTaskType(tab.key)"
         *ngFor="let tab of tabs"
-        [ngClass]="
-          tab.key === (selectedTab$ | async) ? 'bg-slate-200' : 'text-slate-400'
-        "
+        [ngClass]="tab.key === selectedTab ? 'bg-slate-200' : 'text-slate-400'"
         class="p-3 mx-6 rounded-md cursor-pointer font-normal flex gap-2"
       >
         <span
           class="material-symbols-outlined"
-          [ngClass]="tab.key === (selectedTab$ | async) ? 'fill' : ''"
+          [ngClass]="tab.key === selectedTab ? 'fill' : ''"
         >
           {{ tab.icon }} </span
         >{{ tab.title }}
       </div>
     </div>
   </section>
-  <section
-    *ngIf="(newTask$ | async) || (todoList$ | async).length > 0"
-    class="flex m-6 w-full rounded-md border-[2px] border-[#fafafa] border-collapse p-4 flex-col"
-  >
-    <section
-      *ngIf="(newTask$ | async) === true"
-      class="px-2 py-3 flex justify-between cursor-pointer font-normal text-[#545454] border-b-2 border-gray-100 last:border-none gap-4"
-    >
-      <input [(ngModel)]="taskName" class="w-full" placeholder="Your task" />
-      <div class="flex gap-4">
-        <button
-          (click)="saveTask()"
-          class="px-5 py-2 bg-blue-800 hover:bg-blue-700 text-white rounded-md"
-        >
-          Save
-        </button>
-        <button
-          (click)="cancelTask()"
-          class="px-5 py-2 border-[2px] border-blue-800 rounded-md"
-        >
-          Cancel
-        </button>
-      </div>
-    </section>
-    <ng-container *ngFor="let task of todoList$ | async">
-      <div
-        (click)="changedTask(task.id)"
-        class="px-2 py-3 flex justify-between cursor-pointer font-normal text-[#545454] border-b-2 border-gray-100 last:border-none"
-      >
-        <p class="flex w-5/6">{{ task.title }}</p>
-        <div class="flex gap-3">
-          <span
-            class="material-symbols-outlined cursor-pointer"
-            [ngClass]="{
-              'fill text-blue-400': task.done,
-              'text-gray-600 hover:text-blue-400': !task.done
-            }"
-          >
-            {{ task.done ? "check_circle" : "radio_button_unchecked" }}
-          </span>
 
-          <span
-            class="material-symbols-outlined text-gray-500 cursor-pointer hover:text-green-500"
-            >edit</span
+  <section class="ml-[250px] p-6 flex w-full flex-col">
+    <ng-container *ngIf="(tasks$ | async)!.length > 0; else emptyTemplate">
+      <div
+        class="py-2 border-b-[1px] border-[#E2E2E2] flex w-full justify-between items-center"
+        *ngFor="let task of tasks$ | async"
+      >
+        <div class="flex gap-3">
+          <div>
+            <span
+              (click)="changeStatus(task)"
+              [ngClass]="{
+                'text-blue-600': task.done,
+                'text-gray-300 hover:text-blue-200': !task.done
+              }"
+              class="material-symbols-outlined text-xl cursor-pointer font-semibold"
+            >
+              {{ task.done ? "check_circle" : "radio_button_unchecked" }}
+            </span>
+          </div>
+          <!-- Title & Description -->
+          <div class="flex flex-col">
+            <span class="font-medium text-lg text-gray-700">{{
+              task.title
+            }}</span>
+            <span class="text-gray-500">{{ task.description }}</span>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <div
+            (click)="editTask(task.id)"
+            class="flex justify-center text-sm font-medium items-center border-[1px] border-gray-200 rounded-full px-2 py-1 gap-2 text-gray-300 cursor-pointer hover:text-blue-500 hover:border-blue-500"
           >
-          <span
-            class="material-symbols-outlined text-gray-500 cursor-pointer hover:text-red-500"
-            >delete</span
+            <span class="material-symbols-outlined text-sm"> edit </span>Edit
+          </div>
+          <div
+            (click)="deleteTask(task.id)"
+            class="flex justify-center text-sm font-medium items-center border-[1px] border-gray-200 rounded-full px-2 py-1 gap-2 text-gray-300 cursor-pointer hover:text-gray-500 hover:border-gray-500"
           >
+            <span class="material-symbols-outlined text-sm"> delete </span
+            >Remove
+          </div>
         </div>
       </div>
     </ng-container>
+    <ng-template #emptyTemplate>
+      <div
+        class="text-gray-300 justify-center flex items-center flex-col gap-6 h-80 mr-10"
+      >
+        <span class="material-symbols-outlined text-8xl"> devices_fold </span>
+        <h1 class="text-lg">Chill out, you don't have any task</h1>
+        <h1
+          [routerLink]="'/app/task'"
+          class="text-lg border-2 rounded-md border-gray-200 text-gray-300 p-2 cursor-pointer"
+        >
+          + Add new task
+        </h1>
+      </div>
+    </ng-template>
   </section>
 </div>

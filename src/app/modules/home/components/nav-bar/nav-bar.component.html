@@ -14,6 +14,10 @@
       Home
     </span>
     <input id="search" placeholder="Search" class="p-2 px-3" />
+
+    <div class="text-white text-lg">
+      <span class="font-medium">Welcome</span>, {{ username }}
+    </div>
   </h1>
   <div class="flex gap-2">
     <button
@@ -35,7 +39,9 @@
     <button
       class="h-10 w-10 flex justify-center items-center bg-gray-400 hover:bg-[#ffffff44] rounded-full text-white text-lg font-normal"
     >
-      <span>A.P</span>
+      <span
+        >{{ username.split(" ")[0][0] }}.{{ username.split(" ")[1][0] }}</span
+      >
     </button>
   </div>
 </div>

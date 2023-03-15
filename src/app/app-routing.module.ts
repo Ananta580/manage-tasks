@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { HomeGuard } from './auth.guard';
 
 const routes: Routes = [
   {
@@ -9,6 +10,7 @@ const routes: Routes = [
   },
   {
     path: 'app',
+    canActivate: [HomeGuard],
     loadChildren: () =>
       import('src/app/modules/home/home.module').then((m) => m.HomeModule),
   },

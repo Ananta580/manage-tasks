@@ -1,19 +1,19 @@
-import { Component } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { Task } from 'src/app/models/tasks';
-import { LocalstorageService } from 'src/app/services/localstorage.service';
-import { v4 as uuidv4 } from 'uuid';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { map, Observable } from 'rxjs';
+import {
+  DeleteTaskAction,
+  EditTaskAction,
+} from 'src/app/store/actions/tasks.actions';
+import { State } from 'src/app/store/models/state.model';
+import { Task } from 'src/app/store/models/tasks';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
 })
-export class DashboardComponent {
-  taskName = '';
-  taskType$ = new BehaviorSubject<any>([]);
-  todoList$ = new BehaviorSubject<any>([]);
-  newTask$ = new BehaviorSubject<any>(false);
-  selectedTab$ = new BehaviorSubject<any>('all');
+export class DashboardComponent implements OnInit {
   tabs = [
     {
       title: 'All',
@@ -32,59 +32,32 @@ export class DashboardComponent {
     },
   ];
 
-  constructor(private localStorage: LocalstorageService) {
-    this.selectedTab$ = this.localStorage.taskType$;
-    this.todoList$ = this.localStorage.tasks$;
-    this.newTask$ = this.localStorage.newTask$;
-    this.taskType$ = this.localStorage.taskType$;
-  }
+  selectedTab = 'all';
+
+  tasks$!: Observable<Array<Task>>;
+
+  constructor(private store: Store<State>, private router: Router) {}
 
   changeTaskType(tab: string) {
-    this.selectedTab$.next(tab);
-    this.localStorage.task_type = tab;
-    this.localStorage.changedType();
+    this.selectedTab = tab;
   }
 
-  addNewTask() {
-    this.localStorage.newTask$.next(true);
+  ngOnInit(): void {
+    this.tasks$ = this.store.select((store) => store.task);
   }
 
-  changedTask(id: any) {
-    var tasks = this.localStorage.tasks;
-    var task = tasks.find((x) => x.id === id);
-    if (task) {
-      task.done = !task.done;
-    }
-    var index = tasks.findIndex((x) => x.id === id);
-    tasks[index] ?? task;
-    this.localStorage.tasks = tasks;
-
-    this.localStorage.tasks$.next(tasks);
-    if (task?.done) {
-      this.localStorage.task_type = 'done';
-    } else {
-      this.localStorage.task_type = 'todo';
-    }
-    this.localStorage.changedType();
+  changeStatus(task: Task) {
+    var payload = { ...task };
+    payload.done = !payload.done;
+    this.store.dispatch(EditTaskAction({ payload }));
   }
 
-  saveTask() {
-    let task: Task = {
-      id: uuidv4(),
-      title: this.taskName,
-      date: new Date().toString(),
-      done: false,
-    };
-    var tasks = this.localStorage.tasks;
-    tasks.push(task);
-    this.localStorage.tasks = tasks;
-    this.localStorage.tasks$.next(tasks);
-    this.localStorage.newTask$.next(false);
-    this.localStorage.task_type = 'todo';
-    this.localStorage.changedType();
+  editTask(id: number) {
+    this.router.navigateByUrl(`/app/task/${id}`);
   }
 
-  cancelTask() {
-    this.localStorage.newTask$.next(false);
+  deleteTask(id: number) {
+    const payload = id;
+    this.store.dispatch(DeleteTaskAction({ payload }));
   }
 }

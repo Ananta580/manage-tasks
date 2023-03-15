@@ -8,10 +8,5 @@ import { LocalstorageService } from './services/localstorage.service';
 export class AppComponent {
   title = 'your-todo';
   selectedTab = 'all';
-  constructor(private localStorage: LocalstorageService) {
-    this.localStorage.tasks = this.localStorage.tasks.filter(
-      (x) => new Date(x.date).toDateString() === new Date().toDateString()
-    );
-    this.localStorage.changedType();
-  }
+  constructor(private localStorage: LocalstorageService) {}
 }

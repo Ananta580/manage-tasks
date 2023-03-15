@@ -8,36 +8,8 @@ import { LocalstorageService } from 'src/app/services/localstorage.service';
   styleUrls: ['./nav-bar.component.scss'],
 })
 export class NavBarComponent {
-  selectedTab$ = new BehaviorSubject<any>('all');
-  tabs = [
-    {
-      title: 'All',
-      key: 'all',
-      icon: 'date_range',
-    },
-    {
-      title: 'To do',
-      key: 'todo',
-      icon: 'calendar_today',
-    },
-    {
-      title: 'Done',
-      key: 'done',
-      icon: 'event_available',
-    },
-  ];
-
+  username: string = '';
   constructor(private localStorage: LocalstorageService) {
-    this.selectedTab$ = this.localStorage.taskType$;
-  }
-
-  changeTaskType(tab: string) {
-    this.selectedTab$.next(tab);
-    this.localStorage.task_type = tab;
-    this.localStorage.changedType();
-  }
-
-  addNewTask() {
-    this.localStorage.newTask$.next(true);
+    this.username = this.localStorage.username;
   }
 }

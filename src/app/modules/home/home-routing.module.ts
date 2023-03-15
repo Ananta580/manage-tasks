@@ -14,6 +14,10 @@ const routes: Routes = [
         component: DashboardComponent,
       },
       {
+        path: 'task/:id',
+        component: TaskAddComponent,
+      },
+      {
         path: 'task',
         component: TaskAddComponent,
       },
