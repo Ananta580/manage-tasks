@@ -5,11 +5,15 @@
   None
 </li>
 <li
-  class="p-3 cursor-pointer hover:bg-slate-100"
+  class="p-3 cursor-pointer hover:bg-slate-100 flex gap-3 justify-between"
   *ngFor="let group of groups$ | async; let i = index"
   (click)="groupSelected.emit(group)"
 >
   {{ group.name }}
+  <span
+    class="w-6 h-6 flex rounded-full"
+    [style.backgroundColor]="group.color"
+  ></span>
 </li>
 <li
   class="flex gap-2 p-3 cursor-pointer bg-slate-500 text-white hover:bg-slate-600"
@@ -32,13 +36,17 @@
       </span>
     </h1>
     <!-- Body Section -->
-    <section [formGroup]="groupForm">
+    <section [formGroup]="groupForm" class="flex flex-col gap-6">
       <div class="flex w-full flex-col gap-2">
         <label class="text-lg font-medium flex"
           >Name
           <div class="text-red-500 text-xs -mt-0 ml-2">(required*)</div>
         </label>
         <input class="p-3 w-full" formControlName="name" />
+      </div>
+      <div class="flex w-full flex-col gap-2">
+        <label class="text-lg font-medium flex">Highlight Color </label>
+        <input class="w-full h-10" type="color" formControlName="color" />
       </div>
     </section>
     <!-- Footer Section -->

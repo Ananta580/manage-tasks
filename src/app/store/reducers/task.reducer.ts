@@ -3,6 +3,7 @@ import {
   AddTaskAction,
   DeleteTaskAction,
   EditTaskAction,
+  ReorderTaskAction,
 } from '../actions/tasks.actions';
 import { Task } from '../models/tasks';
 
@@ -17,11 +18,25 @@ const reducer = createReducer(
     return [...state, action.payload];
   }),
   on(EditTaskAction, (state, action) => {
-    console.log(action.payload.id);
-
     var newState = state.map((data) => {
       if (data.id === action.payload.id) {
         return { ...action.payload };
+      }
+      return data;
+    });
+    localStorage.setItem('tasks', JSON.stringify([...newState]));
+    return [...newState];
+  }),
+  on(ReorderTaskAction, (state, action: any) => {
+    var prev = action.payload[0];
+    var current = action.payload[1];
+    console.log(prev, current);
+    var newState = state.map((data) => {
+      if (data.id === prev.id) {
+        return { ...prev };
+      }
+      if (data.id === current.id) {
+        return { ...current };
       }
       return data;
     });

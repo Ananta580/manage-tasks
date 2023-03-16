@@ -1,4 +1,4 @@
-import { Action, createAction, props } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
 import { Task } from '../models/tasks';
 
 export const AddTaskAction = createAction(
@@ -9,6 +9,11 @@ export const AddTaskAction = createAction(
 export const EditTaskAction = createAction(
   '[TASK] Edit TASK',
   props<{ payload: Task }>()
+);
+
+export const ReorderTaskAction = createAction(
+  '[TASK] Reorder TASK',
+  props<{ payload: Array<Task> }>()
 );
 
 export const DeleteTaskAction = createAction(

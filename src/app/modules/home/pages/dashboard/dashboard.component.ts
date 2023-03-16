@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { map, Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
   DeleteTaskAction,
   EditTaskAction,
+  ReorderTaskAction,
 } from 'src/app/store/actions/tasks.actions';
 import { State } from 'src/app/store/models/state.model';
 import { Task } from 'src/app/store/models/tasks';
@@ -34,18 +35,77 @@ export class DashboardComponent implements OnInit {
     },
   ];
 
+  sortTabs = [
+    {
+      title: 'Date',
+      key: 'date',
+      icon: 'calendar_month',
+    },
+    {
+      title: 'Groups',
+      key: 'group',
+      icon: 'workspaces',
+    },
+  ];
+
   selectedTab = 'all';
+
+  selectedSortTab = 'date';
 
   tasks$!: Observable<Array<Task>>;
 
   constructor(private store: Store<State>, private router: Router) {}
 
+  ngOnInit(): void {
+    // Sort by order
+    this.loadTasks();
+  }
+
+  loadTasks() {
+    this.tasks$ = this.store
+      .select((store) => store.task)
+      .pipe(
+        map((data) => {
+          var sortData = [];
+          sortData = [...data];
+          sortData.sort((a, b) => {
+            return a.order < b.order ? -1 : 1;
+          });
+          return sortData;
+        })
+      );
+  }
+
   changeTaskType(tab: string) {
     this.selectedTab = tab;
   }
 
-  ngOnInit(): void {
-    this.tasks$ = this.store.select((store) => store.task);
+  // TODO
+  changeSortType(tab: string) {
+    this.selectedSortTab = tab;
+    switch (tab) {
+      case 'date':
+        this.tasks$ = this.store
+          .select((store) => store.task)
+          .pipe(
+            map((data) => {
+              data.sort((a, b) => {
+                return a.order < b.order ? -1 : 1;
+              });
+              return data;
+            })
+          );
+        break;
+      case 'group':
+        this.tasks$ = this.store
+          .select((store) => store.task)
+          .pipe(
+            tap((results) => {
+              results.sort((x) => x.group?.name);
+            })
+          );
+        break;
+    }
   }
 
   changeStatus(task: Task) {
@@ -63,5 +123,26 @@ export class DashboardComponent implements OnInit {
     this.store.dispatch(DeleteTaskAction({ payload }));
   }
 
-  drop(event: any) {}
+  drop(event: any) {
+    var prev = event.previousIndex;
+    var current = event.currentIndex;
+    var prevItem: any = null;
+    var currentItem: any = null;
+    var sth = this.tasks$.subscribe({
+      next: (res) => {
+        prevItem = { ...res.find((x) => x.order == prev + 1) };
+        currentItem = { ...res.find((x) => x.order == current + 1) };
+      },
+    });
+    setTimeout(() => {
+      var prevOrder = JSON.parse(JSON.stringify(prevItem.order));
+      var currentOrder = JSON.parse(JSON.stringify(currentItem.order));
+      prevItem.order = currentOrder;
+      currentItem.order = prevOrder;
+      this.store.dispatch(
+        ReorderTaskAction({ payload: [prevItem, currentItem] })
+      );
+      sth.unsubscribe();
+    }, 100);
+  }
 }

@@ -21,6 +21,7 @@ export class GroupListComponent implements OnInit {
   constructor(private store: Store<State>, private fb: FormBuilder) {
     this.groupForm = this.fb.group({
       name: ['', Validators.required],
+      color: ['#408fea'],
     });
   }
 
@@ -47,6 +48,7 @@ export class GroupListComponent implements OnInit {
     const payload: Group = {
       id: this.maxId + 1,
       name: this.groupForm.get('name')?.value,
+      color: this.groupForm.get('color')?.value,
     };
     this.store.dispatch(AddGroupAction({ payload }));
     this.loadGroup();
