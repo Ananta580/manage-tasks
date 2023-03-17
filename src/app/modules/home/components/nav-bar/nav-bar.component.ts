@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Router } from '@angular/router';
 import { LocalstorageService } from 'src/app/services/localstorage.service';
 
 @Component({
@@ -8,8 +8,24 @@ import { LocalstorageService } from 'src/app/services/localstorage.service';
   styleUrls: ['./nav-bar.component.scss'],
 })
 export class NavBarComponent {
-  username: string = '';
-  constructor(private localStorage: LocalstorageService) {
-    this.username = this.localStorage.username;
+  user$ = this.localStorage.user$;
+
+  showSettingPopup = false;
+  constructor(
+    private router: Router,
+    private localStorage: LocalstorageService
+  ) {}
+
+  openSettingPopup() {
+    this.showSettingPopup = true;
+  }
+
+  clearMyData() {
+    localStorage.clear();
+    this.router.navigateByUrl('/auth/login');
+  }
+
+  updateProfile() {
+    this.router.navigateByUrl('/app/setting');
   }
 }

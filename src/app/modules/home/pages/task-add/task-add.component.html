@@ -40,7 +40,10 @@
           (backdropClick)="isOpen = false"
         >
           <ul class="bg-gray-50 m-2 shadow-sm rounded-sm min-w-[190px]">
-            <app-group-list (groupSelected)="setGroup($event)"></app-group-list>
+            <app-group-list
+              [selectedGroup]="group.value"
+              (groupSelected)="setGroup($event)"
+            ></app-group-list>
           </ul>
         </ng-template>
       </div>

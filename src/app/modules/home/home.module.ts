@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HomeRoutingModule } from './home-routing.module';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { HomeComponent } from './home.component';
@@ -13,6 +14,7 @@ import { StoreModule } from '@ngrx/store';
 import { TaskReducer } from 'src/app/store/reducers/task.reducer';
 import { GroupListComponent } from './components/group-list/group-list.component';
 import { SharedModule } from '../shared/shared.module';
+import { SettingComponent } from './pages/setting/setting.component';
 
 @NgModule({
   declarations: [
@@ -21,12 +23,14 @@ import { SharedModule } from '../shared/shared.module';
     DashboardComponent,
     TaskAddComponent,
     GroupListComponent,
+    SettingComponent,
   ],
   imports: [
     CommonModule,
     MatSelectModule,
     ReactiveFormsModule,
     FormsModule,
+    MatSnackBarModule,
     DragDropModule,
     SharedModule,
     OverlayModule,

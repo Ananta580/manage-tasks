@@ -1,8 +1,12 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AddGroupAction } from 'src/app/store/actions/group.actions';
+import {
+  AddGroupAction,
+  DeleteGroupAction,
+  EditGroupAction,
+} from 'src/app/store/actions/group.actions';
 import { Group } from 'src/app/store/models/group';
 import { State } from 'src/app/store/models/state.model';
 
@@ -17,11 +21,15 @@ export class GroupListComponent implements OnInit {
   maxId = 0;
   groupForm: FormGroup;
 
+  editId: any = null;
+
+  @Input() selectedGroup = null;
+
   @Output() groupSelected = new EventEmitter<Group | undefined>();
   constructor(private store: Store<State>, private fb: FormBuilder) {
     this.groupForm = this.fb.group({
       name: ['', Validators.required],
-      color: ['#408fea'],
+      color: ['#000000'],
     });
   }
 
@@ -40,20 +48,52 @@ export class GroupListComponent implements OnInit {
     });
   }
 
+  closeModal() {
+    this.showModal = false;
+    this.groupForm.reset();
+    this.editId = null;
+  }
+
   addGroup() {
     if (this.groupForm.invalid) {
       return;
     }
-    console.log(this.maxId);
     const payload: Group = {
       id: this.maxId + 1,
       name: this.groupForm.get('name')?.value,
       color: this.groupForm.get('color')?.value,
     };
+    this.groupSelected.emit(payload);
     this.store.dispatch(AddGroupAction({ payload }));
-    this.loadGroup();
     // Reset Form
     this.groupForm.reset();
     this.showModal = false;
+  }
+
+  editGroup() {
+    if (this.groupForm.invalid) {
+      return;
+    }
+    const payload: Group = {
+      id: this.editId,
+      name: this.groupForm.get('name')?.value,
+      color: this.groupForm.get('color')?.value,
+    };
+    this.store.dispatch(EditGroupAction({ payload }));
+    // Reset Form
+    this.groupForm.reset();
+    this.showModal = false;
+    this.editId = null;
+  }
+
+  patchGroup(group: Group) {
+    this.editId = group.id;
+    this.groupForm.patchValue(group);
+    this.showModal = true;
+  }
+
+  deleteGroup(group: Group) {
+    const payload = group.id;
+    this.store.dispatch(DeleteGroupAction({ payload }));
   }
 }

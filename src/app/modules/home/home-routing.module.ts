@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { SettingComponent } from './pages/setting/setting.component';
 import { TaskAddComponent } from './pages/task-add/task-add.component';
 
 const routes: Routes = [
@@ -20,6 +21,10 @@ const routes: Routes = [
       {
         path: 'task',
         component: TaskAddComponent,
+      },
+      {
+        path: 'setting',
+        component: SettingComponent,
       },
     ],
   },

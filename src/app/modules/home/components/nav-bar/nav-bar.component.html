@@ -1,5 +1,5 @@
 <div
-  class="flex shadow-sm px-8 items-center justify-between bg-gradient-to-r from-blue-700 via-blue-500 to-blue-700"
+  class="flex fixed w-full z-10 shadow-sm px-8 items-center justify-between bg-gradient-to-r from-blue-700 via-blue-500 to-blue-700"
 >
   <h1 class="py-3 flex items-center gap-6">
     <span
@@ -16,7 +16,7 @@
     <input id="search" placeholder="Search" class="p-2 px-3" />
 
     <div class="text-white text-lg">
-      <span class="font-medium">Welcome</span>, {{ username }}
+      <span class="font-medium">Welcome</span>, {{ user$ | async }}
     </div>
   </h1>
   <div class="flex gap-2">
@@ -32,6 +32,9 @@
       <span class="material-symbols-outlined">notifications</span>
     </button>
     <button
+      cdkOverlayOrigin
+      #trigger="cdkOverlayOrigin"
+      (click)="showSettingPopup = !showSettingPopup"
       class="h-10 w-10 flex justify-center items-center hover:bg-[#ffffff44] rounded-full text-white text-lg font-normal"
     >
       <span class="material-symbols-outlined">settings</span>
@@ -40,8 +43,41 @@
       class="h-10 w-10 flex justify-center items-center bg-gray-400 hover:bg-[#ffffff44] rounded-full text-white text-lg font-normal"
     >
       <span
-        >{{ username.split(" ")[0][0] }}.{{ username.split(" ")[1][0] }}</span
+        >{{ (user$ | async)!.split(" ")[0][0] }}.{{
+          (user$ | async)!.split(" ")[1]
+            ? (user$ | async)!.split(" ")[1][0]
+            : ""
+        }}</span
       >
     </button>
   </div>
 </div>
+
+<ng-template
+  cdkConnectedOverlay
+  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="showSettingPopup"
+  (backdropClick)="showSettingPopup = false"
+>
+  <ul class="bg-gray-50 m-2 shadow-md rounded-sm min-w-[190px]">
+    <li
+      class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200"
+      (click)="clearMyData()"
+    >
+      <span class="material-symbols-outlined text-xl"> mop </span>Clear my data
+    </li>
+    <li
+      class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200"
+      (click)="updateProfile()"
+    >
+      <span class="material-symbols-outlined text-xl"> manage_accounts </span
+      >Update Profile
+    </li>
+    <li class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200">
+      <span class="material-symbols-outlined text-xl"> public </span>Switch
+      online
+    </li>
+  </ul>
+</ng-template>
