@@ -78,10 +78,11 @@ export class DashboardComponent implements OnInit {
 
   changeTaskType(tab: string) {
     this.selectedTab = tab;
+    // TODO: Show only task of that type;
   }
 
-  // TODO
   changeSortType(tab: string) {
+    // TODO: Sort tasks by these types
     this.selectedSortTab = tab;
     switch (tab) {
       case 'date':

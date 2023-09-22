@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -31,6 +32,7 @@ import { SettingComponent } from './pages/setting/setting.component';
     ReactiveFormsModule,
     FormsModule,
     MatSnackBarModule,
+    MatIconModule,
     DragDropModule,
     SharedModule,
     OverlayModule,
