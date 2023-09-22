@@ -11,6 +11,7 @@ export class LocalstorageService {
   }
   set username(username: string) {
     localStorage.setItem('username', username);
+    this.user$.next(username);
   }
   get username() {
     return localStorage.getItem('username') ?? '';
