@@ -46,7 +46,10 @@
     <div
       cdkDropList
       (cdkDropListDropped)="drop($event)"
-      *ngIf="(tasks$ | async)!.length > 0; else emptyTemplate"
+      *ngIf="
+        (tasks$ | async) && (tasks$ | async)!.length > 0;
+        else emptyTemplate
+      "
     >
       <div
         cdkDrag

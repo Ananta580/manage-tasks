@@ -37,6 +37,11 @@ export class DashboardComponent implements OnInit {
 
   sortTabs = [
     {
+      title: 'Order',
+      key: 'order',
+      icon: 'low_priority',
+    },
+    {
       title: 'Date',
       key: 'date',
       icon: 'calendar_month',
@@ -50,39 +55,51 @@ export class DashboardComponent implements OnInit {
 
   selectedTab = 'all';
 
-  selectedSortTab = 'date';
+  selectedSortTab = 'order';
 
   tasks$!: Observable<Array<Task>>;
 
   constructor(private store: Store<State>, private router: Router) {}
 
   ngOnInit(): void {
-    // Sort by order
-    this.loadTasks();
-  }
-
-  loadTasks() {
-    this.tasks$ = this.store
-      .select((store) => store.task)
-      .pipe(
-        map((data) => {
-          var sortData = [];
-          sortData = [...data];
-          sortData.sort((a, b) => {
-            return a.order < b.order ? -1 : 1;
-          });
-          return sortData;
-        })
-      );
+    // Sort by order at first
+    this.changeSortType('order');
   }
 
   changeTaskType(tab: string) {
     this.selectedTab = tab;
-    // TODO: Show only task of that type;
+    switch (tab) {
+      case 'todo':
+        this.tasks$ = this.store
+          .select((store) => store.task)
+          .pipe(
+            map((data) => {
+              var filteredData = [];
+              filteredData = [...data];
+              filteredData = filteredData.filter((x) => x.done === false);
+              return filteredData;
+            })
+          );
+        break;
+      case 'done':
+        this.tasks$ = this.store
+          .select((store) => store.task)
+          .pipe(
+            map((data) => {
+              var filteredData = [];
+              filteredData = [...data];
+              filteredData = filteredData.filter((x) => x.done === true);
+              return filteredData;
+            })
+          );
+        break;
+      default:
+        this.changeSortType('order');
+        break;
+    }
   }
 
   changeSortType(tab: string) {
-    // TODO: Sort tasks by these types
     this.selectedSortTab = tab;
     switch (tab) {
       case 'date':
@@ -90,10 +107,13 @@ export class DashboardComponent implements OnInit {
           .select((store) => store.task)
           .pipe(
             map((data) => {
-              data.sort((a, b) => {
-                return a.order < b.order ? -1 : 1;
-              });
-              return data;
+              var sortData = [];
+              sortData = [...data];
+              sortData.sort(
+                (a, b) =>
+                  new Date(b.date).getTime() - new Date(a.date).getTime()
+              );
+              return sortData;
             })
           );
         break;
@@ -101,8 +121,25 @@ export class DashboardComponent implements OnInit {
         this.tasks$ = this.store
           .select((store) => store.task)
           .pipe(
-            tap((results) => {
-              results.sort((x) => x.group?.name);
+            map((data) => {
+              var sortData = [];
+              sortData = [...data];
+              sortData.sort((x) => x.group?.name);
+              return sortData;
+            })
+          );
+        break;
+      default:
+        this.tasks$ = this.store
+          .select((store) => store.task)
+          .pipe(
+            map((data) => {
+              var sortData = [];
+              sortData = [...data];
+              sortData.sort((a, b) => {
+                return a.order < b.order ? -1 : 1;
+              });
+              return sortData;
             })
           );
         break;
