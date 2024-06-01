@@ -69,10 +69,10 @@
             <span
               (click)="changeStatus(task)"
               [ngClass]="{
-                'text-blue-600': task.done,
+                'text-blue-600 dark:text-blue-400': task.done,
                 'text-gray-300 hover:text-blue-200': !task.done
               }"
-              class="material-symbols-outlined text-xl cursor-pointer font-semibold"
+              class="material-symbols-outlined text-2xl cursor-pointer font-semibold"
             >
               {{ task.done ? "check_circle" : "radio_button_unchecked" }}
             </span>
@@ -84,7 +84,7 @@
                 *ngIf="task.group"
                 style="letter-spacing: 0.6px"
                 [style.background]="task.group?.color"
-                class="text-xs text-white dark:text-gray-200 px-2 py-1 rounded-full"
+                class="text-xs text-white dark:text-gray-200 px-2 py-1 rounded-r-full"
                 >{{ task.group?.name }}</span
               >
               <span
