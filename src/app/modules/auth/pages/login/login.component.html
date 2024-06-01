@@ -10,13 +10,13 @@
 
   <!-- Form element -->
   <div class="flex flex-col gap-1">
-    <label class="text-lg">Name</label>
+    <label class="text-lg dark:text-gray-200">Name</label>
     <input class="p-3" placeholder="Give your name" [(ngModel)]="name" />
   </div>
 
   <button
     (click)="doLogin()"
-    class="flex justify-center rounded-md bg-black hover:bg-slate-800 text-white py-3"
+    class="flex justify-center rounded-md bg-black hover:bg-slate-800 dark:hover:bg-slate-900 text-white py-3 dark:text-gray-200"
   >
     Start Now
   </button>

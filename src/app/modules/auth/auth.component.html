@@ -1,9 +1,14 @@
 <div class="flex-col md:flex md:flex-row">
   <div
-    class="flex flex-col w-full items-center justify-center bg-blue-50 min-h-[300px] h-auto md:w-3/6 md:h-screen"
+    class="flex flex-col w-full items-center justify-center bg-blue-50 min-h-[300px] h-auto md:w-3/6 md:h-screen dark:bg-slate-900"
   >
-    <span class="text-8xl font-medium text-blue-600 underline">TODO</span>
-    <span class="text-xl text-slate-500">Your own day task tracker</span>
+    <span
+      class="text-8xl font-medium text-blue-600 dark:text-blue-500 underline"
+      >TODO</span
+    >
+    <span class="text-xl text-slate-500 dark:text-slate-300"
+      >Your own day task tracker</span
+    >
   </div>
   <div class="block w-full p-6 md:w-3/6">
     <router-outlet></router-outlet>
