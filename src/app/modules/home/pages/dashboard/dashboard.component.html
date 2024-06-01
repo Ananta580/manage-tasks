@@ -1,5 +1,5 @@
 <div
-  class="flex gap-3 overflow-y-auto bg-white min-h-[calc(100vh-4rem)] dark:bg-slate-700"
+  class="flex gap-3 overflow-y-auto bg-white min-h-[calc(100vh-4rem)] dark:bg-gray-700"
 >
   <section
     class="flex fixed flex-col w-auto min-w-[250px] bg-slate-100 pt-6 h-screen dark:bg-slate-800"
@@ -8,7 +8,11 @@
       <div
         (click)="changeTaskType(tab.key)"
         *ngFor="let tab of tabs"
-        [ngClass]="tab.key === selectedTab ? 'bg-slate-200' : 'text-slate-400'"
+        [ngClass]="
+          tab.key === selectedTab
+            ? 'bg-slate-200 dark:bg-slate-600 dark:text-slate-300'
+            : 'text-slate-400'
+        "
         class="p-3 mx-6 rounded-md cursor-pointer font-normal flex gap-2"
       >
         <span
@@ -19,14 +23,16 @@
         >{{ tab.title }}
       </div>
     </div>
-    <div class="py-4 mt-6 px-10 flex flex-col gap-1 border-t-2 border-gray-200">
+    <div
+      class="py-4 mt-6 px-10 flex flex-col gap-1 border-t-2 border-gray-200 dark:border-gray-500"
+    >
       <span class="mb-3 text-gray-500">Sort By</span>
       <div
         (click)="changeSortType(tab.key)"
         *ngFor="let tab of sortTabs"
         [ngClass]="
           tab.key === selectedSortTab
-            ? 'bg-blue-400 text-white'
+            ? 'bg-blue-400 text-white dark:text-gray-300 dark:bg-blue-800'
             : 'text-gray-400'
         "
         class="p-3 rounded-md cursor-pointer font-normal flex gap-2"
@@ -55,7 +61,7 @@
     >
       <div
         cdkDrag
-        class="py-2 border-b-[1px] border-[#E2E2E2] flex w-full justify-between items-center bg-[#f9f9f9]"
+        class="py-2 border-b-[1px] border-[#E2E2E2] flex w-full justify-between items-center bg-white dark:bg-gray-700"
         *ngFor="let task of tasks$ | async"
       >
         <div class="flex gap-3">
@@ -81,11 +87,14 @@
                 class="text-xs text-white px-2 py-1 rounded-full"
                 >{{ task.group?.name }}</span
               >
-              <span class="font-medium text-lg text-gray-700">{{
-                task.title
-              }}</span>
+              <span
+                class="font-medium text-lg text-gray-700 dark:text-gray-200"
+                >{{ task.title }}</span
+              >
             </span>
-            <span class="text-gray-500">{{ task.description }}</span>
+            <span class="text-gray-500 dark:text-gray-300">{{
+              task.description
+            }}</span>
           </div>
         </div>
 
@@ -108,17 +117,17 @@
     </div>
     <ng-template #emptyTemplate>
       <div
-        class="text-gray-400 justify-center flex items-center flex-col gap-6 h-80 mr-10"
+        class="text-gray-400 dark:text-gray-300 justify-center flex items-center flex-col gap-6 h-80 mr-10"
       >
         <mat-icon class="scale-[3]">inbox</mat-icon>
         <h1 class="text-lg">Relax, you have no pending tasks!</h1>
-        <p class="text-md text-gray-500">
+        <p class="text-md text-gray-500 dark:text-gray-400">
           Enjoy your free time or take this opportunity to start something new.
         </p>
 
         <h1
           [routerLink]="'/app/task'"
-          class="text-lg border-2 rounded-md border-gray-200 text-gray-400 p-5 px-10 cursor-pointer flex items-center gap-3"
+          class="text-lg border-2 rounded-md border-gray-200 dark:border-gray-400 text-gray-400 p-5 px-10 cursor-pointer flex items-center gap-3"
         >
           <mat-icon>add_circle_outline</mat-icon> Add New Task
         </h1>
