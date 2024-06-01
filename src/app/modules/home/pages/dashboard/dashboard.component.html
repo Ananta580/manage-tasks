@@ -106,15 +106,19 @@
     </div>
     <ng-template #emptyTemplate>
       <div
-        class="text-gray-300 justify-center flex items-center flex-col gap-6 h-80 mr-10"
+        class="text-gray-400 justify-center flex items-center flex-col gap-6 h-80 mr-10"
       >
-        <mat-icon class="scale-[3]">bookmark_border</mat-icon>
-        <h1 class="text-lg">Chill out, you don't have any task</h1>
+        <mat-icon class="scale-[3]">inbox</mat-icon>
+        <h1 class="text-lg">Relax, you have no pending tasks!</h1>
+        <p class="text-md text-gray-500">
+          Enjoy your free time or take this opportunity to start something new.
+        </p>
+
         <h1
           [routerLink]="'/app/task'"
-          class="text-lg border-2 rounded-md border-gray-200 text-gray-300 p-2 cursor-pointer"
+          class="text-lg border-2 rounded-md border-gray-200 text-gray-400 p-5 px-10 cursor-pointer flex items-center gap-3"
         >
-          + Add new task
+          <mat-icon>add_circle_outline</mat-icon> Add New Task
         </h1>
       </div>
     </ng-template>

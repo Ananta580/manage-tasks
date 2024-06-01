@@ -1,66 +1,85 @@
-<div class="flex items-center justify-center gap-6">
-  <div
-    [formGroup]="taskForm"
-    class="m-6 w-3/6 flex flex-col gap-6 rounded-md p-6 border-[1px] bg-white shadow-sm"
-  >
-    <!-- First row -->
-    <div class="flex w-full gap-6">
-      <div class="flex w-full flex-col gap-2">
-        <label class="text-lg font-medium flex"
-          >Title
-          <div class="text-red-500 text-xs -mt-0 ml-2">(required*)</div>
-        </label>
-        <input class="p-3 w-full" formControlName="title" />
-      </div>
-      <div class="flex flex-col gap-2">
-        <label class="text-lg flex">Group</label>
-        <div
-          (click)="isOpen = !isOpen"
-          cdkOverlayOrigin
-          #trigger="cdkOverlayOrigin"
-          class="text-gray-300 w-[200px] p-3 border-[1px] border-gray-300 rounded-md cursor-pointer"
-        >
-          <span
-            class="text-gray-800"
-            *ngIf="group.value != null; else emptyOption"
-          >
-            {{ group?.value?.name }}
-          </span>
-          <ng-template #emptyOption>
-            <span> Select an option </span>
-          </ng-template>
+<div class="flex flex-col min-h-[calc(100vh-4rem)] bg-white">
+  <!-- Breadcrumb -->
+  <nav class="text-gray-500 text-sm p-5">
+    <a routerLink="/" class="hover:text-gray-700">Home</a>
+    <span> / </span>
+    <span class="text-black font-semibold">Task Form</span>
+  </nav>
+
+  <!-- Form Content -->
+  <div class="flex items-center justify-center flex-grow">
+    <div class="w-full max-w-2xl flex flex-col gap-6 p-8">
+      <div [formGroup]="taskForm" class="flex flex-col gap-6">
+        <!-- First row -->
+        <div class="flex flex-wrap gap-6">
+          <div class="flex flex-1 flex-col gap-2">
+            <label class="text-lg font-medium flex items-center"
+              >Task Title
+              <div class="text-red-500 text-xs ml-2">(required*)</div>
+            </label>
+            <input
+              class="p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              formControlName="title"
+              placeholder="Enter task title"
+            />
+          </div>
+          <div class="flex flex-col gap-2 w-full sm:w-auto">
+            <label class="text-lg font-medium">Task Group</label>
+            <div
+              (click)="isOpen = !isOpen"
+              cdkOverlayOrigin
+              #trigger="cdkOverlayOrigin"
+              class="text-gray-700 w-full sm:w-52 p-3 border border-gray-300 rounded-md cursor-pointer hover:border-blue-500"
+            >
+              <span *ngIf="group.value != null; else emptyOption">
+                {{ group?.value?.name }}
+              </span>
+              <ng-template #emptyOption>
+                <span class="text-gray-400">Select a group</span>
+              </ng-template>
+            </div>
+            <!-- This template displays the overlay content and is connected to the button -->
+            <ng-template
+              cdkConnectedOverlay
+              cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+              [cdkConnectedOverlayHasBackdrop]="true"
+              [cdkConnectedOverlayOrigin]="trigger"
+              [cdkConnectedOverlayOpen]="isOpen"
+              (backdropClick)="isOpen = false"
+            >
+              <ul
+                class="bg-white border border-gray-300 shadow-lg rounded-md mt-2 w-full max-w-sm"
+              >
+                <app-group-list
+                  [selectedGroup]="group.value"
+                  (groupSelected)="setGroup($event)"
+                ></app-group-list>
+              </ul>
+            </ng-template>
+          </div>
         </div>
-        <!-- This template displays the overlay content and is connected to the button -->
-        <ng-template
-          cdkConnectedOverlay
-          cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
-          [cdkConnectedOverlayHasBackdrop]="true"
-          [cdkConnectedOverlayOrigin]="trigger"
-          [cdkConnectedOverlayOpen]="isOpen"
-          (backdropClick)="isOpen = false"
-        >
-          <ul class="bg-gray-50 m-2 shadow-sm rounded-sm min-w-[190px]">
-            <app-group-list
-              [selectedGroup]="group.value"
-              (groupSelected)="setGroup($event)"
-            ></app-group-list>
-          </ul>
-        </ng-template>
+
+        <!-- Description field -->
+        <div class="flex flex-col gap-2">
+          <label class="text-lg font-medium">Task Description</label>
+          <textarea
+            class="p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            rows="4"
+            formControlName="description"
+            placeholder="Enter task description"
+          ></textarea>
+        </div>
+
+        <!-- Save button -->
+        <div class="flex justify-end">
+          <button
+            (click)="saveTask()"
+            class="px-5 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          >
+            {{ taskId ? "Update Task" : "Create Task" }}
+          </button>
+        </div>
       </div>
-    </div>
-
-    <div class="flex flex-col gap-2">
-      <label class="text-lg">Description</label>
-      <textarea class="p-3" rows="4" formControlName="description"></textarea>
-    </div>
-
-    <div>
-      <button
-        (click)="saveTask()"
-        class="px-5 py-3 bg-black text-white rounded-md hover:bg-slate-700"
-      >
-        {{ taskId ? "Update" : "Create" }} Task
-      </button>
     </div>
   </div>
 </div>

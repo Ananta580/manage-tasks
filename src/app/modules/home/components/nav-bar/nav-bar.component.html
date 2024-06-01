@@ -1,72 +1,91 @@
 <div
-  class="flex fixed w-full z-10 shadow-sm px-8 items-center justify-between bg-gradient-to-r from-black to-blue-900"
+  class="fixed top-0 w-full z-10 bg-gradient-to-r from-black to-blue-900 shadow-sm"
 >
-  <h1 class="py-3 flex items-center gap-6">
-    <img routerLink="/app" width="30px" src="assets/logo.png" />
-
-    <input id="search" placeholder="Search" class="p-2 px-5" />
-
-    <div class="text-white text-lg">
-      <span class="font-medium">Welcome, </span> {{ user$ | async }}
+  <div class="flex justify-between items-center px-8 py-3">
+    <div class="flex items-center gap-6">
+      <p class="text-white text-2xl">
+        {{ currentDate$ | async | date : "hh:mm a" }}
+      </p>
+      <!-- "Good morning" Message -->
+      <div class="text-white text-lg">
+        <span class="font-light">{{ greeting }} </span>
+        <span class="font-normal">{{ user$ | async }}</span>
+      </div>
     </div>
-  </h1>
-  <div class="flex gap-2">
-    <button
-      routerLink="/app/task"
-      class="h-10 w-10 flex justify-center hover:bg-[#ebebeb] bg-white items-center hover:bg-[#ffffff44] rounded-full text-lg font-normal text-blue-600"
-    >
-      <mat-icon>add</mat-icon>
-    </button>
-    <button
-      class="h-10 w-10 flex justify-center items-center hover:bg-[#ffffff44] rounded-full text-white text-lg font-normal"
-    >
-      <mat-icon>notifications</mat-icon>
-    </button>
-    <button
-      cdkOverlayOrigin
-      #trigger="cdkOverlayOrigin"
-      (click)="showSettingPopup = !showSettingPopup"
-      class="h-10 w-10 flex justify-center items-center hover:bg-[#ffffff44] rounded-full text-white text-lg font-normal"
-    >
-      <mat-icon>settings</mat-icon>
-    </button>
-    <button
-      class="h-10 w-10 flex justify-center items-center bg-gray-400 hover:bg-[#ffffff44] rounded-full text-white text-lg font-normal"
-    >
-      <span
-        >{{ (user$ | async)!.split(" ")[0][0] }}.{{
-          (user$ | async)!.split(" ")[1]
-            ? (user$ | async)!.split(" ")[1][0]
-            : ""
-        }}</span
-      >
-    </button>
-  </div>
-</div>
 
-<ng-template
-  cdkConnectedOverlay
-  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
-  [cdkConnectedOverlayHasBackdrop]="true"
-  [cdkConnectedOverlayOrigin]="trigger"
-  [cdkConnectedOverlayOpen]="showSettingPopup"
-  (backdropClick)="showSettingPopup = false"
->
-  <ul class="bg-gray-50 m-2 shadow-md rounded-sm min-w-[190px]">
-    <li
-      class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200"
-      (click)="clearMyData()"
-    >
-      <mat-icon>clear</mat-icon>Clear my data
-    </li>
-    <li
-      class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200"
-      (click)="updateProfile()"
-    >
-      <mat-icon>account_circle</mat-icon>Update Profile
-    </li>
-    <li class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200">
-      <mat-icon>public</mat-icon>Switch online
-    </li>
-  </ul>
-</ng-template>
+    <!-- User Actions -->
+    <div class="flex items-center gap-2">
+      <input
+        id="search"
+        placeholder="Search"
+        class="p-2 px-5 mr-5 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <!-- Add Task Button -->
+      <button
+        routerLink="/app/task"
+        class="h-10 w-10 flex justify-center items-center bg-white hover:bg-[#ffffff44] rounded-full text-blue-600"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+
+      <!-- Notifications Button -->
+      <button
+        class="h-10 w-10 flex justify-center items-center bg-transparent hover:bg-[#ffffff44] rounded-full text-white"
+      >
+        <mat-icon>notifications</mat-icon>
+      </button>
+
+      <!-- Settings Button -->
+      <button
+        cdkOverlayOrigin
+        #trigger="cdkOverlayOrigin"
+        (click)="showSettingPopup = !showSettingPopup"
+        class="h-10 w-10 flex justify-center items-center bg-transparent hover:bg-[#ffffff44] rounded-full text-white"
+      >
+        <mat-icon>settings</mat-icon>
+      </button>
+
+      <!-- User Avatar Button -->
+      <button
+        class="h-10 w-10 flex justify-center items-center bg-gray-400 hover:bg-[#ffffff44] rounded-full text-white"
+      >
+        <span>
+          {{ (user$ | async)!.split(" ")[0][0]
+          }}{{
+            (user$ | async)!.split(" ")[1]
+              ? (user$ | async)!.split(" ")[1][0]
+              : ""
+          }}
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Setting Popup -->
+  <ng-template
+    cdkConnectedOverlay
+    cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="showSettingPopup"
+    (backdropClick)="showSettingPopup = false"
+  >
+    <ul class="bg-gray-50 m-2 shadow-md rounded-sm min-w-[190px]">
+      <li
+        class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200"
+        (click)="clearMyData()"
+      >
+        <mat-icon>clear</mat-icon>Clear my data
+      </li>
+      <li
+        class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200"
+        (click)="updateProfile()"
+      >
+        <mat-icon>account_circle</mat-icon>Update Profile
+      </li>
+      <li class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200">
+        <mat-icon>public</mat-icon>Switch online
+      </li>
+    </ul>
+  </ng-template>
+</div>
