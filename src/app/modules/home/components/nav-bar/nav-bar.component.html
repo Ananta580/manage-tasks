@@ -1,13 +1,13 @@
 <div
-  class="fixed top-0 w-full z-10 bg-gradient-to-r from-black to-blue-900 shadow-sm"
+  class="fixed top-0 w-full z-10 bg-gradient-to-r from-black bg-blue-500 text-gray-50 shadow-sm dark:bg-black"
 >
   <div class="flex justify-between items-center px-8 py-3">
     <div class="flex items-center gap-6">
-      <p class="text-white text-2xl">
+      <p class="text-2xl">
         {{ currentDate$ | async | date : "hh:mm a" }}
       </p>
       <!-- "Good morning" Message -->
-      <div class="text-white text-lg">
+      <div class="text-lg">
         <span class="font-light">{{ greeting }} </span>
         <span class="font-normal">{{ user$ | async }}</span>
       </div>
@@ -18,12 +18,12 @@
       <input
         id="search"
         placeholder="Search"
-        class="p-2 px-5 mr-5 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+        class="p-2 px-5 mr-5 bg-white dark:bg-gray-400 dark:placeholder:text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <!-- Add Task Button -->
       <button
         routerLink="/app/task"
-        class="h-10 w-10 flex justify-center items-center bg-white hover:bg-[#ffffff44] rounded-full text-blue-600"
+        class="h-10 w-10 flex justify-center items-center bg-white hover:bg-[#06010144] hover:text-white rounded-full text-blue-600"
       >
         <mat-icon>add</mat-icon>
       </button>
