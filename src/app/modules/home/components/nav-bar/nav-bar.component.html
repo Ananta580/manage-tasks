@@ -1,5 +1,5 @@
 <div
-  class="fixed top-0 w-full z-10 bg-gradient-to-r from-black bg-blue-500 text-gray-50 shadow-sm dark:bg-black"
+  class="fixed top-0 w-full z-10 bg-gradient-to-r from-black bg-blue-500 text-gray-50 shadow-sm dark:bg-black dark:text-gray-200"
 >
   <div class="flex justify-between items-center px-8 py-3">
     <div class="flex items-center gap-6">
@@ -18,19 +18,19 @@
       <input
         id="search"
         placeholder="Search"
-        class="p-2 px-5 mr-5 bg-white dark:bg-gray-400 dark:placeholder:text-black rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+        class="p-2 px-5 mr-5 bg-white dark:bg-gray-200 dark:placeholder:text-gray-500 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <!-- Add Task Button -->
       <button
         routerLink="/app/task"
-        class="h-10 w-10 flex justify-center items-center bg-white hover:bg-[#06010144] hover:text-white rounded-full text-blue-600"
+        class="h-10 w-10 flex justify-center items-center bg-white dark:bg-gray-300 hover:bg-[#06010144] dark:hover:bg-[#ffffff44] hover:text-white rounded-full text-blue-600"
       >
         <mat-icon>add</mat-icon>
       </button>
 
       <!-- Notifications Button -->
       <button
-        class="h-10 w-10 flex justify-center items-center bg-transparent hover:bg-[#ffffff44] rounded-full text-white"
+        class="h-10 w-10 flex justify-center items-center bg-transparent hover:bg-[#ffffff44] rounded-full dark:text-gray-300"
       >
         <mat-icon>notifications</mat-icon>
       </button>
@@ -40,7 +40,7 @@
         cdkOverlayOrigin
         #trigger="cdkOverlayOrigin"
         (click)="showSettingPopup = !showSettingPopup"
-        class="h-10 w-10 flex justify-center items-center bg-transparent hover:bg-[#ffffff44] rounded-full text-white"
+        class="h-10 w-10 flex justify-center items-center bg-transparent hover:bg-[#ffffff44] rounded-full dark:text-gray-300"
       >
         <mat-icon>settings</mat-icon>
       </button>
@@ -70,20 +70,24 @@
     [cdkConnectedOverlayOpen]="showSettingPopup"
     (backdropClick)="showSettingPopup = false"
   >
-    <ul class="bg-gray-50 m-2 shadow-md rounded-sm min-w-[190px]">
+    <ul
+      class="bg-gray-50 dark:bg-gray-300 m-2 shadow-md rounded-sm min-w-[190px]"
+    >
       <li
-        class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200"
+        class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 dark:hover:text-gray-200"
         (click)="clearMyData()"
       >
         <mat-icon>clear</mat-icon>Clear my data
       </li>
       <li
-        class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200"
+        class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 dark:hover:text-gray-200"
         (click)="updateProfile()"
       >
         <mat-icon>account_circle</mat-icon>Update Profile
       </li>
-      <li class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200">
+      <li
+        class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 dark:hover:text-gray-200"
+      >
         <mat-icon>public</mat-icon>Switch online
       </li>
     </ul>
