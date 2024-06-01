@@ -16,6 +16,11 @@ export const ReorderTaskAction = createAction(
   props<{ payload: Array<Task> }>()
 );
 
+export const searchTaskAction = createAction(
+  '[TASK] Serch TASK',
+  props<{ payload: string }>()
+);
+
 export const DeleteTaskAction = createAction(
   '[TASK] Delete TASK',
   props<{ payload: number }>()
