@@ -12,6 +12,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   user$ = this.localStorage.user$;
 
   showSettingPopup = false;
+  showModal = false;
   greeting?: string;
 
   theme = this.localStorage.theme;
@@ -54,12 +55,18 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.showSettingPopup = true;
   }
 
+  showClearDataPopup() {
+    this.showSettingPopup = false;
+    this.showModal = true;
+  }
+
   clearMyData() {
     localStorage.clear();
     this.router.navigateByUrl('/auth/login');
   }
 
   updateProfile() {
+    this.showSettingPopup = false;
     this.router.navigateByUrl('/app/setting');
   }
 
