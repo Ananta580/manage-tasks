@@ -1,12 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LocalstorageService } from './services/localstorage.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'your-todo';
   selectedTab = 'all';
   constructor(private localStorage: LocalstorageService) {}
+  ngOnInit(): void {
+    if (this.localStorage.theme) {
+      document.getElementsByTagName('html')[0].className =
+        this.localStorage.theme;
+    } else {
+      const darkModeMatcher = window.matchMedia('(prefers-color-scheme: dark)');
+      const theme = darkModeMatcher.matches ? 'dark' : 'light';
+      this.localStorage.theme = theme;
+    }
+  }
 }

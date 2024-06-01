@@ -16,4 +16,11 @@ export class LocalstorageService {
   get username() {
     return localStorage.getItem('username') ?? '';
   }
+
+  set theme(theme: string) {
+    localStorage.setItem('theme', theme);
+  }
+  get theme() {
+    return localStorage.getItem('theme') ?? '';
+  }
 }

@@ -14,6 +14,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
   showSettingPopup = false;
   greeting?: string;
 
+  theme = this.localStorage.theme;
+
   dateSubject = new BehaviorSubject<Date>(new Date());
   currentDate$?: Observable<Date> = this.dateSubject;
   private subscription?: Subscription;
@@ -59,5 +61,16 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   updateProfile() {
     this.router.navigateByUrl('/app/setting');
+  }
+
+  changeTheme() {
+    if (this.theme == 'dark') {
+      this.theme = 'light';
+    } else if (this.theme == 'light') {
+      this.theme = 'dark';
+    }
+
+    document.getElementsByTagName('html')[0].className = this.theme;
+    this.localStorage.theme = this.theme;
   }
 }

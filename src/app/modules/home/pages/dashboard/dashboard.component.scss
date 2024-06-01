@@ -6,6 +6,17 @@
     0 8px 10px 1px rgba(0, 0, 0, 0.064), 0 3px 14px 2px rgba(0, 0, 0, 0.064);
 }
 
+::ng-deep .dark{
+  .cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    padding: 8px;
+    box-shadow: 0 5px 5px -3px rgba(255, 255, 255, 0.04),
+      0 8px 10px 1px rgba(255, 255, 255, 0.027), 0 3px 14px 2px rgba(255, 255, 255, 0.041)  !important
+  }
+  
+}
+
 .cdk-drag-placeholder {
   opacity: 0;
 }

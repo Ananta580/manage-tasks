@@ -61,7 +61,7 @@
     >
       <div
         cdkDrag
-        class="py-2 border-b-[1px] border-[#E2E2E2] flex w-full justify-between items-center bg-white dark:bg-gray-700"
+        class="py-2 border-b-[1px] border-[#E2E2E2] dark:border-gray-500 flex w-full justify-between items-center bg-white dark:bg-gray-700"
         *ngFor="let task of tasks$ | async"
       >
         <div class="flex gap-3">
@@ -84,7 +84,7 @@
                 *ngIf="task.group"
                 style="letter-spacing: 0.6px"
                 [style.background]="task.group?.color"
-                class="text-xs text-white px-2 py-1 rounded-full"
+                class="text-xs text-white dark:text-gray-200 px-2 py-1 rounded-full"
                 >{{ task.group?.name }}</span
               >
               <span
@@ -101,13 +101,13 @@
         <div class="flex gap-3">
           <div
             (click)="editTask(task.id)"
-            class="flex justify-center text-sm font-medium items-center border-[1px] border-gray-200 rounded-full px-2 py-1 gap-2 text-gray-300 cursor-pointer hover:text-blue-500 hover:border-blue-500"
+            class="flex justify-center text-sm font-medium items-center border-[1px] border-gray-200 dark:border-gray-500 rounded-full px-3 pr-4 py-1 gap-2 text-gray-300 cursor-pointer hover:!text-blue-500 hover:!border-blue-500 dark:hover:!text-blue-300 dark:text-gray-400"
           >
             <span class="material-symbols-outlined text-sm"> edit </span>Edit
           </div>
           <div
             (click)="deleteTask(task.id)"
-            class="flex justify-center text-sm font-medium items-center border-[1px] border-gray-200 rounded-full px-2 py-1 gap-2 text-gray-300 cursor-pointer hover:text-gray-500 hover:border-gray-500"
+            class="flex justify-center text-sm font-medium items-center border-[1px] border-gray-200 dark:border-gray-500 rounded-full px-3 pr-4 py-1 gap-2 text-gray-300 dark:text-gray-400 cursor-pointer hover:!text-gray-500 dark:hover:!text-gray-300 hover:!border-gray-500"
           >
             <span class="material-symbols-outlined text-sm"> delete </span
             >Remove
