@@ -31,7 +31,7 @@
   </div>
 </li>
 <li
-  class="flex gap-2 p-3 cursor-pointer bg-slate-500 text-white hover:bg-slate-600"
+  class="flex gap-2 p-3 cursor-pointer bg-slate-500 text-white dark:text-gray-300 hover:bg-slate-600"
   (click)="showModal = true"
 >
   <span class="material-symbols-outlined"> add </span>Add
@@ -39,7 +39,9 @@
 
 <!-- Popup for Adding Group -->
 <app-modal *ngIf="showModal">
-  <div class="p-6 bg-white rounded-md flex flex-col gap-6">
+  <div
+    class="p-6 bg-white dark:bg-gray-700 dark:border-gray-200 rounded-md flex flex-col gap-6 dark:text-gray-300"
+  >
     <!-- Modal Title -->
     <h1 class="font-medium flex justify-between items-center text-lg">
       Add new Group
@@ -53,22 +55,31 @@
     <!-- Body Section -->
     <section [formGroup]="groupForm" class="flex flex-col gap-6">
       <div class="flex w-full flex-col gap-2">
-        <label class="text-lg font-medium flex"
+        <label class="text-lg font-medium flex items-center"
           >Name
-          <div class="text-red-500 text-xs -mt-0 ml-2">(required*)</div>
+          <div class="text-red-500 text-xs -mt-0 ml-2 t dark:text-red-400">
+            (required*)
+          </div>
         </label>
-        <input class="p-3 w-full" formControlName="name" />
+        <input
+          class="p-3 w-full text-gray-700 dark:bg-gray-100"
+          formControlName="name"
+        />
       </div>
       <div class="flex w-full flex-col gap-2">
         <label class="text-lg font-medium flex">Highlight Color </label>
-        <input class="w-full h-10" type="color" formControlName="color" />
+        <input
+          class="w-full h-10 dark:bg-gray-100"
+          type="color"
+          formControlName="color"
+        />
       </div>
     </section>
     <!-- Footer Section -->
     <section>
       <button
         (click)="editId ? editGroup() : addGroup()"
-        class="px-5 py-3 bg-black text-white rounded-md hover:bg-slate-700"
+        class="px-5 py-3 bg-black text-white dark:text-gray-300 rounded-md hover:bg-slate-700 dark:hover:bg-slate-900"
       >
         Save
       </button>
