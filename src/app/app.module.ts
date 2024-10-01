@@ -1,7 +1,10 @@
+import { environment } from './../env/environment.prod';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreModule } from '@ngrx/store';
@@ -19,6 +22,9 @@ import { HomeGuard } from './auth.guard';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     StoreModule.forRoot({ task: TaskReducer, group: GroupReducer }),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule,
+    AngularFirestoreModule,
   ],
   providers: [
     provideRouter([
