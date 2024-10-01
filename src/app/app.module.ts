@@ -1,17 +1,17 @@
-import { environment } from './../.env/environment';
 import { NgModule } from '@angular/core';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
-import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { StoreModule } from '@ngrx/store';
-import { TaskReducer } from './store/reducers/task.reducer';
-import { GroupReducer } from './store/reducers/group.reducer';
 import { provideRouter, RouterModule } from '@angular/router';
+import { StoreModule } from '@ngrx/store';
+import { environment } from './../.env/environment';
+import { AppComponent } from './app.component';
 import { HomeGuard } from './auth.guard';
+import { GroupReducer } from './store/reducers/group.reducer';
+import { TaskReducer } from './store/reducers/task.reducer';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,11 +22,11 @@ import { HomeGuard } from './auth.guard';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     StoreModule.forRoot({ task: TaskReducer, group: GroupReducer }),
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAuthModule,
-    AngularFirestoreModule,
   ],
   providers: [
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirestore(() => getFirestore()),
+    provideAuth(() => getAuth()),
     provideRouter([
       {
         path: '',
