@@ -7,14 +7,56 @@ import { LocalstorageService } from 'src/app/services/localstorage.service';
   templateUrl: './login.component.html',
 })
 export class LoginComponent {
+  selectedStorageType = 'local';
+
+  storageTypes = [
+    {
+      label: 'Local Storage',
+      value: 'local',
+      icon: 'browser_updated',
+      features: [
+        `Offline Access: Manage tasks without an internet connection, ensuring privacy and quick access.`,
+        `Instant Setup: No sign-in required; start organizing your tasks immediately!`,
+      ],
+    },
+    {
+      label: 'Cloud Storage',
+      value: 'cloud',
+      icon: 'cloud_upload',
+      features: [
+        `Access Anywhere: Sign in to view and manage tasks from any device with seamless synchronization.`,
+        `Cloud Backup: Securely store your tasks online, ensuring they’re safe and accessible anytime.`,
+      ],
+    },
+  ];
   name!: string;
   constructor(
     private localStorage: LocalstorageService,
     private router: Router
   ) {}
 
+  get selectedStorageFeatures() {
+    return this.storageTypes.find(
+      (storage) => storage.value === this.selectedStorageType
+    )?.features;
+  }
+
   doLogin() {
-    this.localStorage.username = this.name;
-    this.router.navigateByUrl('/');
+    const arrow = document.getElementById('login-arrow') as any;
+    arrow?.animate(
+      [{ transform: 'translateX(0)' }, { transform: 'translateX(100px)' }],
+      {
+        duration: 500,
+        fill: 'forwards',
+      }
+    );
+    setTimeout(() => {
+      if (this.selectedStorageType === 'local') {
+        this.localStorage.username = this.name;
+        this.router.navigateByUrl('/');
+      } else {
+        this.router.navigateByUrl('/auth/cloud');
+      }
+    }, 500);
   }
 }

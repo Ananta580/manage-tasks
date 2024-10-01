@@ -1,23 +1,50 @@
-<div class="flex w-full justify-start flex-col px-10 py-20 gap-10">
-  <!-- <div class="flex w-full bg-slate-800 rounded-md p-2 font-medium text-lg">
-    <button class="flex w-3/6 bg-white px-6 py-1 rounded-md justify-center">
-      Local
-    </button>
-    <button class="flex w-3/6 text-white px-6 py-1 rounded-md justify-center">
-      Global
-    </button>
-  </div> -->
-
-  <!-- Form element -->
-  <div class="flex flex-col gap-1">
-    <label class="text-lg dark:text-gray-200">Name</label>
-    <input class="p-3" placeholder="Give your name" [(ngModel)]="name" />
+<div class="flex w-full h-screen bg-white justify-start flex-col px-10 py-20 gap-20">
+  <div
+    class="flex flex-col gap-3 font-light justify-center items-start p-8 border-2 rounded-xl border-green-600 bg-green-50 w-full">
+    <div class="justify-center text-xl mb-5 w-full flex items-center gap-10">
+      <p *ngFor="let type of storageTypes" class="flex items-center gap-1 cursor-pointer font-medium" [ngClass]="{
+           'text-green-600': selectedStorageType == type.value,
+           'text-gray-400 cursor-pointer': selectedStorageType != type.value
+         }" (click)="selectedStorageType = type.value">
+        <span class="material-symbols-outlined font-medium">{{type.icon}}</span>
+        {{type.label}}
+      </p>
+    </div>
+    <p *ngFor="let feature of selectedStorageFeatures" class="flex items-start gap-2">
+      <span class="material-symbols-outlined">check</span>
+      {{feature}}
+    </p>
   </div>
 
-  <button
-    (click)="doLogin()"
-    class="flex justify-center rounded-md bg-black hover:bg-slate-800 dark:hover:bg-slate-900 text-white py-3 dark:text-gray-200"
-  >
-    Start Now
-  </button>
+  <!-- Local storage section -->
+  <div *ngIf="selectedStorageType=='local'" class="flex flex-col gap-5">
+    <input class="p-5 text-lg font-light border-gray-200 bg-white focus:ring-2 ring-black"
+      placeholder="What should we call you?" [(ngModel)]="name" />
+    <button (click)="doLogin()"
+      class="flex justify-center items-center text-lg rounded-md bg-black hover:bg-gray-800 transition-all duration-500 text-white p-5">
+      Start Managing
+      <span id="login-arrow" class="material-symbols-outlined ml-5">
+        arrow_right_alt
+      </span>
+    </button>
+  </div>
+
+  <!-- Cloud storage section -->
+  <div *ngIf="selectedStorageType=='cloud'" class="flex flex-col gap-5">
+    <input class="p-5 text-lg font-light border-gray-200 bg-white focus:ring-2 ring-black"
+      placeholder="What should we call you?" [(ngModel)]="name" />
+    <div class="flex gap-5">
+      <input class="p-5 w-1/2 text-lg font-light border-gray-200 bg-white focus:ring-2 ring-black"
+        placeholder="Your best email" />
+      <input class="p-5 w-1/2 text-lg font-light border-gray-200 bg-white focus:ring-2 ring-black"
+        placeholder="Choose a secure password" />
+    </div>
+    <button (click)="doLogin()"
+      class="flex justify-center items-center text-lg rounded-md bg-black hover:bg-gray-800 transition-all duration-500 text-white p-5">
+      Create Your Account
+      <span id="login-arrow" class="material-symbols-outlined ml-5">
+        arrow_right_alt
+      </span>
+    </button>
+  </div>
 </div>

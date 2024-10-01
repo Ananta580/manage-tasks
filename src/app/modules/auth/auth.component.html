@@ -1,16 +1,15 @@
-<div class="flex-col md:flex md:flex-row">
-  <div
-    class="flex flex-col w-full items-center justify-center bg-blue-50 min-h-[300px] h-auto md:w-3/6 md:h-screen dark:bg-slate-900"
-  >
+<div class="flex-col bg-gray-50 border-r border-black  md:flex md:flex-row">
+  <div class="flex flex-col w-full gap-2 items-center justify-center min-h-[300px] h-auto md:w-3/6 md:h-screen">
     <span
-      class="text-8xl font-medium text-blue-600 dark:text-blue-500 underline"
-      >TODO</span
-    >
-    <span class="text-xl text-slate-500 dark:text-slate-300"
-      >Your own day task tracker</span
-    >
+      class="text-9xl leading-none font-extrabold w-full flex justify-center bg-gradient-to-tr from-green-900 via-emerald-600 to-green-400 text-transparent bg-clip-text">
+      // <span class="italic">TODO</span>
+    </span>
+    <span class="text-xl italic font-light text-slate-500">
+      Track Every Task, Group with Purpose, and Achieve Your Goals!
+    </span>
   </div>
-  <div class="block w-full p-6 md:w-3/6">
+
+  <div class="block w-full h-screen md:w-3/6">
     <router-outlet></router-outlet>
   </div>
 </div>
