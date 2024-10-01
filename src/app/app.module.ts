@@ -1,4 +1,4 @@
-import { environment } from './../env/environment.prod';
+import { environment } from './../.env/environment';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
