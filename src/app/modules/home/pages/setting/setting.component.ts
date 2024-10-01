@@ -10,11 +10,11 @@ export class SettingComponent {
 
   user$ = this.localStorage.user$;
   constructor(private localStorage: LocalstorageService) {
-    this.name = this.localStorage.username;
+    this.name = this.localStorage.todo_local_username;
   }
 
   updateProfile() {
-    this.localStorage.username = this.name;
+    this.localStorage.todo_local_username = this.name;
     this.localStorage.user$.next(this.name);
   }
 }

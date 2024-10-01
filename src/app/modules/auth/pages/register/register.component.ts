@@ -62,7 +62,7 @@ export class RegisterComponent {
     );
     setTimeout(() => {
       if (this.selectedStorageType === 'local') {
-        this.localStorage.username = this.name;
+        this.localStorage.todo_local_username = this.name;
         this.router.navigateByUrl('/');
       } else {
         this.authService.signup(this.registerForm.value).then(() => {

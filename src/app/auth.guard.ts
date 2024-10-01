@@ -27,7 +27,7 @@ export class HomeGuard implements CanActivate {
     | boolean
     | UrlTree {
     // Checking token and user subscriptions: If both exists then only show dashboard //
-    if (this.localStorage.username) {
+    if (this.localStorage.todo_local_username) {
       return true;
     } else {
       this.router.navigateByUrl('/auth/login');

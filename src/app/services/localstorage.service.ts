@@ -7,14 +7,14 @@ import { BehaviorSubject } from 'rxjs';
 export class LocalstorageService {
   user$ = new BehaviorSubject<string>('');
   constructor() {
-    this.user$.next(this.username);
+    this.user$.next(this.todo_local_username);
   }
-  set username(username: string) {
-    localStorage.setItem('username', username);
-    this.user$.next(username);
+  set todo_local_username(todo_local_username: string) {
+    localStorage.setItem('todo_local_username', todo_local_username);
+    this.user$.next(todo_local_username);
   }
-  get username() {
-    return localStorage.getItem('username') ?? '';
+  get todo_local_username() {
+    return localStorage.getItem('todo_local_username') ?? '';
   }
 
   set theme(theme: string) {
