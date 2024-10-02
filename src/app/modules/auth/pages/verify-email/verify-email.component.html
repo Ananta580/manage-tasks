@@ -1,6 +1,6 @@
 <div class="flex w-full h-screen bg-white justify-start flex-col px-10 py-20 gap-10">
     <div
-        class="flex flex-col gap-3 font-light justify-center items-start p-8 border-2 rounded-xl border-green-600 bg-green-50 w-full">
+        class="flex flex-col gap-4 font-light justify-center items-start p-8 border-2 rounded-xl border-green-600 bg-green-50 w-full">
         <div class="justify-center text-xl mb-5 w-full flex items-center gap-10">
             <p class="flex items-center gap-1 cursor-pointer font-medium text-green-600">
                 <span class="material-symbols-outlined font-medium">email</span>
@@ -8,13 +8,15 @@
             </p>
         </div>
         <p class=" text-center break-words gap-2">
-
             We've sent a verification email to the following address <b>({{'anantapoudel580@gmail.com'}})</b>. Please
             check
             your
             inbox and click the link to
             verify your email. If you haven't received the email, you can resend the verification link.
         </p>
+        <p class="flex w-full gap-2 font-medium  justify-center">Already verified ? <span [routerLink]="'/auth/login'"
+                class="text-emerald-600 cursor-pointer">Refresh page
+            </span></p>
     </div>
 
     <p class="flex gap-3 items-center justify-center text-gray-500 text-center">
@@ -25,7 +27,7 @@
     </p>
 
     <div class="flex flex-col gap-5">
-        <button
+        <button (click)="resendEmail()"
             class="flex justify-center items-center text-lg rounded-md bg-black hover:bg-gray-800 transition-all duration-500 text-white p-5">
             Resend Verification Email
             <span id="login-arrow" class="material-symbols-outlined ml-5">
@@ -33,8 +35,6 @@
             </span>
         </button>
     </div>
-    <p class="flex w-full gap-2  justify-center">Already verified ? <span [routerLink]="'/auth/login'"
-            class="text-emerald-600 cursor-pointer">Log in
-            here</span></p>
+
 
 </div>

@@ -9,7 +9,7 @@ import { provideRouter, RouterModule } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
 import { environment } from './../.env/environment';
 import { AppComponent } from './app.component';
-import { HomeGuard } from './auth.guard';
+import { HomeGuard } from './guards/home.guard';
 import { GroupReducer } from './store/reducers/group.reducer';
 import { TaskReducer } from './store/reducers/task.reducer';
 

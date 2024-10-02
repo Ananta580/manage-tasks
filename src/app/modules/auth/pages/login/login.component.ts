@@ -30,11 +30,14 @@ export class LoginComponent {
       }
     );
     setTimeout(() => {
-      this.authService.signup(this.loginForm.value).then(() => {
-        this.authService.verifyEmail().then(() => {
-          this.router.navigateByUrl('/verify-email');
+      this.authService
+        .login(this.loginForm.value)
+        .then((auth) => {
+          this.router.navigate(['/']);
+        })
+        .catch((error) => {
+          console.error(error);
         });
-      });
     }, 500);
   }
 }

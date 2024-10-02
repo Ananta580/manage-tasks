@@ -7,6 +7,9 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { StartingComponent } from './pages/starting/starting.component';
 import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
+import { LoginGuard } from 'src/app/guards/login.guard';
+import { RegisterGuard } from 'src/app/guards/register.guard';
+import { VerifyEmailGuard } from 'src/app/guards/verify-email.guard';
 
 @NgModule({
   declarations: [
@@ -26,18 +29,22 @@ import { VerifyEmailComponent } from './pages/verify-email/verify-email.componen
           {
             path: 'login',
             component: LoginComponent,
+            canActivate: [LoginGuard],
           },
           {
             path: 'register',
             component: RegisterComponent,
+            canActivate: [RegisterGuard],
           },
           {
             path: 'verify-email',
             component: VerifyEmailComponent,
+            canActivate: [VerifyEmailGuard],
           },
           {
             path: 'complete',
             component: StartingComponent,
+            canActivate: [VerifyEmailGuard],
           },
         ],
       },

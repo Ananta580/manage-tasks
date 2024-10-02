@@ -43,7 +43,12 @@ export class RegisterComponent {
     private localStorage: LocalstorageService,
     private router: Router,
     private authService: AuthService
-  ) {}
+  ) {
+    if (this.localStorage.todo_local_username) {
+      this.selectedStorageType = 'cloud';
+      this.storageTypes.splice(0, 1);
+    }
+  }
 
   get selectedStorageFeatures() {
     return this.storageTypes.find(
@@ -67,7 +72,7 @@ export class RegisterComponent {
       } else {
         this.authService.signup(this.registerForm.value).then(() => {
           this.authService.verifyEmail().then(() => {
-            this.router.navigateByUrl('/verify-email');
+            this.router.navigateByUrl('/auth/verify-email');
           });
         });
       }

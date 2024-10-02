@@ -1,30 +1,20 @@
-<div class="flex w-full h-screen bg-white justify-start flex-col px-10 py-20 gap-20">
-  <div
-    class="flex flex-col gap-3 font-light justify-center items-start p-8 border-2 rounded-xl border-green-600 bg-green-50 w-full">
-    <div class="justify-center text-xl mb-5 w-full flex items-center gap-10">
-      <p class="flex items-center gap-1 cursor-pointer font-medium text-green-600">
-        Login to Your Account
-      </p>
-    </div>
-    <!-- <p *ngFor="let feature of selectedStorageFeatures" class="flex items-start gap-2">
-      <span class="material-symbols-outlined">check</span>
-      {{feature}}
-    </p> -->
-  </div>
-
+<div class="flex w-full h-screen bg-white justify-start flex-col px-10 py-20 gap-10">
+  <p class="text-3xl font-medium text-green-600 cursor-pointer">
+    Login to your account
+  </p>
 
   <!-- Cloud storage section -->
   <div [formGroup]="loginForm" class="flex flex-col gap-5">
     <input class="p-5 text-lg font-light border-gray-200 bg-white focus:ring-2 ring-black" placeholder="Your best email"
       formControlName="email" />
     <input class="p-5 text-lg font-light border-gray-200 bg-white focus:ring-2 ring-black"
-      placeholder="Choose a secure password" formControlName="password" />
+      placeholder="Your secure password" formControlName="password" />
     <button (click)="doLogin()"
       class="flex justify-center items-center text-lg rounded-md bg-black hover:bg-gray-800 transition-all duration-500 text-white p-5">
-      Login Now
+      Start Managing
       <span id="login-arrow" class="material-symbols-outlined ml-5">arrow_right_alt</span>
     </button>
-    <p class="flex w-full gap-2  justify-center">Don't have an account yet ? <span [routerLink]="'/auth/register'"
+    <p class="flex w-full gap-2 justify-center">Don't have an account yet? <span [routerLink]="'/auth/register'"
         class="text-emerald-600 cursor-pointer">Sign Up
       </span></p>
   </div>
