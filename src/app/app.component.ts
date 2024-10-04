@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalstorageService } from './services/localstorage.service';
+import { environment } from 'src/.env/environment';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,7 @@ export class AppComponent implements OnInit {
   selectedTab = 'all';
   constructor(private localStorage: LocalstorageService) {}
   ngOnInit(): void {
+    console.log(environment);
     if (this.localStorage.theme) {
       document.getElementsByTagName('html')[0].className =
         this.localStorage.theme;
