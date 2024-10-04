@@ -39,12 +39,12 @@ import { VerifyEmailGuard } from 'src/app/guards/verify-email.guard';
           {
             path: 'verify-email',
             component: VerifyEmailComponent,
-            canActivate: [VerifyEmailGuard],
+            // canActivate: [VerifyEmailGuard],
           },
           {
             path: 'complete',
             component: StartingComponent,
-            canActivate: [VerifyEmailGuard],
+            // canActivate: [VerifyEmailGuard],
           },
         ],
       },

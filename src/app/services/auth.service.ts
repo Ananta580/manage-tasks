@@ -12,6 +12,7 @@ import {
 import { User, UserLogin, UserRegister } from '../store/models/user';
 import { BehaviorSubject, delay } from 'rxjs';
 import { LocalstorageService } from './localstorage.service';
+import { ToastService } from './toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -21,7 +22,10 @@ export class AuthService {
   private _userSubject = new BehaviorSubject<User | null>(null);
   user$ = this._userSubject.asObservable();
 
-  constructor(private localStorageService: LocalstorageService) {}
+  constructor(
+    private localStorageService: LocalstorageService,
+    private toastService: ToastService
+  ) {}
 
   async signup(user: UserRegister): Promise<UserCredential> {
     // TODO: Error handling
@@ -52,7 +56,6 @@ export class AuthService {
       // Added timeout because of the delay in auth loading
       setTimeout(async () => {
         const currentUser = this._auth.currentUser;
-        console.log('currentUser', currentUser);
         if (currentUser && currentUser.emailVerified) {
           const userDocRef = doc(this._firestore, `users/${currentUser.uid}`);
           const userDoc = await getDoc(userDocRef);
@@ -91,43 +94,35 @@ export class AuthService {
       this.localStorageService.todo_cloud_user = user;
       return user;
     } catch (error: any) {
-      if (
-        error.code === 'auth/wrong-password' ||
-        error.code === 'auth/invalid-email' ||
-        error.code === 'auth/user-not-found' ||
-        error.code === 'auth/user-disabled' ||
-        error.code === 'auth/too-many-requests' ||
-        error.code === 'auth/operation-not-allowed'
-      ) {
-        let message = '';
-        switch (error.code) {
-          case 'auth/wrong-password':
-            message = 'Incorrect password. Please try again.';
-            break;
-          case 'auth/invalid-email':
-            message = 'Invalid email address. Please check and try again.';
-            break;
-          case 'auth/user-not-found':
-            message = 'No user found with this email. Please sign up first.';
-            break;
-          case 'auth/user-disabled':
-            message =
-              'This user account has been disabled. Please contact support.';
-            break;
-          case 'auth/too-many-requests':
-            message = 'Too many login attempts. Please try again later.';
-            break;
-          case 'auth/operation-not-allowed':
-            message =
-              'Login with email and password is not enabled. Please contact support.';
-            break;
-        }
-        alert(`Authentication error: ${message}`);
-      } else {
-        console.error('Login error:', error);
-      }
+      this._handleLoginError(error);
       return null;
     }
+  }
+
+  private _handleLoginError(error: any): void {
+    const errorMessages: { [key: string]: string } = {
+      'auth/wrong-password': 'Incorrect password. Please try again.',
+      'auth/invalid-email':
+        'Invalid email address. Please check and try again.',
+      'auth/invalid-credential':
+        'Invalid credentials. Please check and try again.',
+      'auth/missing-password':
+        'Invalid password. Please enter password and try again.',
+      'auth/user-not-found':
+        'No user found with this email. Please sign up first.',
+      'auth/user-disabled':
+        'This user account has been disabled. Please contact support.',
+      'auth/too-many-requests':
+        'Too many login attempts. Please try again later.',
+      'auth/operation-not-allowed':
+        'Login with email and password is not enabled. Please contact support.',
+    };
+
+    const message =
+      errorMessages[error.code] ||
+      'An unknown error occurred. Please try again.';
+    this.toastService.showError(message);
+    console.error('Login error:', error);
   }
 
   private async _setUserData(user: User): Promise<User> {

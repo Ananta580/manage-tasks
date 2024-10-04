@@ -3,6 +3,7 @@ import { Form, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { LocalstorageService } from 'src/app/services/localstorage.service';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,7 @@ export class LoginComponent {
   constructor(
     private localStorage: LocalstorageService,
     private router: Router,
+    private toastService: ToastService,
     private authService: AuthService
   ) {}
 
@@ -33,7 +35,10 @@ export class LoginComponent {
       this.authService
         .login(this.loginForm.value)
         .then((auth) => {
-          this.router.navigate(['/']);
+          if (auth) {
+            this.toastService.showSuccess('Login successfull');
+            this.router.navigate(['/']);
+          }
         })
         .catch((error) => {
           console.error(error);

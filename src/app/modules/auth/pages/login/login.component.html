@@ -1,7 +1,18 @@
 <div class="flex w-full h-screen bg-white justify-start flex-col px-10 py-20 gap-10">
-  <p class="text-3xl font-medium text-green-600 cursor-pointer">
-    Login to your account
-  </p>
+  <div
+    class="flex flex-col gap-3 font-light justify-center items-start p-8 border-2 rounded-xl border-green-600 bg-green-50 w-full">
+    <div class="justify-center text-xl mb-5 w-full flex items-center gap-10">
+      <p class="flex items-center gap-3 cursor-pointer font-medium text-green-600">
+        <span class="material-symbols-outlined font-medium">
+          domino_mask
+        </span>
+        Sign In to Your Dashboard
+      </p>
+    </div>
+    <p class="text-center break-words gap-2">
+      Manage your account, update your preferences, and access personalized features tailored just for you.
+    </p>
+  </div>
 
   <!-- Cloud storage section -->
   <div [formGroup]="loginForm" class="flex flex-col gap-5">
