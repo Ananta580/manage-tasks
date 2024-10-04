@@ -15,10 +15,10 @@ jobs:
       - run: npm install
       - name: Debug environment variables
         run: |
-          printenv
+          echo ${{secrets.FIREBASE_API_KEY}}
       - name: Replace environment variables
         run: |
-          sed -i "s|\${FIREBASE_API_KEY}|${{ env.FIREBASE_API_KEY }}|g" ./src/.env/environment.prod.ts
+          sed -i "s|\${FIREBASE_API_KEY}|${{ secrets.FIREBASE_API_KEY }}|g" ./src/.env/environment.prod.ts
           sed -i "s|\${FIREBASE_AUTH_DOMAIN}|${{ env.FIREBASE_AUTH_DOMAIN }}|g" ./src/.env/environment.prod.ts
           sed -i "s|\${FIREBASE_PROJECT_ID}|${{ env.FIREBASE_PROJECT_ID}}|g" ./src/.env/environment.prod.ts
           sed -i "s|\${FIREBASE_STORAGE_BUCKET}|${{ env.FIREBASE_STORAGE_BUCKET }}|g" ./src/.env/environment.prod.ts
