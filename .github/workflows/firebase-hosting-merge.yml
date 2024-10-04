@@ -15,7 +15,7 @@ jobs:
       - run: npm install
       - name: Debug environment variables
         run: |
-          echo "FIREBASE_API_KEY: ${{ env }}"
+          echo "FIREBASE_API_KEY: ${{ env.Production.FIREBASE_AUTH_DOMAIN }}"
           echo "FIREBASE_AUTH_DOMAIN: ${{ env.FIREBASE_AUTH_DOMAIN }}"
           echo "FIREBASE_PROJECT_ID: ${{ env.FIREBASE_PROJECT_ID }}"
           echo "FIREBASE_STORAGE_BUCKET: ${{ env.FIREBASE_STORAGE_BUCKET }}"
