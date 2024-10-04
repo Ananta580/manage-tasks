@@ -8,43 +8,18 @@ name: Deploy to Firebase Hosting on merge
       - master
 jobs:
   build_and_deploy:
-    environment: Production
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: npm install
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Dump job context
-        env:
-          JOB_CONTEXT: ${{ toJson(job) }}
-        run: echo "$JOB_CONTEXT"
-      - name: Dump steps context
-        env:
-          STEPS_CONTEXT: ${{ toJson(steps) }}
-        run: echo "$STEPS_CONTEXT"
-      - name: Dump runner context
-        env:
-          RUNNER_CONTEXT: ${{ toJson(runner) }}
-        run: echo "$RUNNER_CONTEXT"
-      - name: Dump strategy context
-        env:
-          STRATEGY_CONTEXT: ${{ toJson(strategy) }}
-        run: echo "$STRATEGY_CONTEXT"
-      - name: Dump matrix context
-        env:
-          MATRIX_CONTEXT: ${{ toJson(matrix) }}
-        run: echo "$MATRIX_CONTEXT"
       - name: Replace environment variables
         run: |
           sed -i "s|\${FIREBASE_API_KEY}|${{ secrets.FIREBASE_API_KEY }}|g" ./src/.env/environment.prod.ts
-          sed -i "s|\${FIREBASE_AUTH_DOMAIN}|${{ env.FIREBASE_AUTH_DOMAIN }}|g" ./src/.env/environment.prod.ts
-          sed -i "s|\${FIREBASE_PROJECT_ID}|${{ env.FIREBASE_PROJECT_ID}}|g" ./src/.env/environment.prod.ts
-          sed -i "s|\${FIREBASE_STORAGE_BUCKET}|${{ env.FIREBASE_STORAGE_BUCKET }}|g" ./src/.env/environment.prod.ts
-          sed -i "s|\${FIREBASE_MESSAGING_SENDER_ID}|${{ env.FIREBASE_MESSAGING_SENDER_ID }}|g" ./src/.env/environment.prod.ts
-          sed -i "s|\${FIREBASE_APP_ID}|${{ env.FIREBASE_APP_ID }}|g" ./src/.env/environment.prod.ts
+          sed -i "s|\${FIREBASE_AUTH_DOMAIN}|${{ secrets.FIREBASE_AUTH_DOMAIN }}|g" ./src/.env/environment.prod.ts
+          sed -i "s|\${FIREBASE_PROJECT_ID}|${{ secrets.FIREBASE_PROJECT_ID}}|g" ./src/.env/environment.prod.ts
+          sed -i "s|\${FIREBASE_STORAGE_BUCKET}|${{ secrets.FIREBASE_STORAGE_BUCKET }}|g" ./src/.env/environment.prod.ts
+          sed -i "s|\${FIREBASE_MESSAGING_SENDER_ID}|${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}|g" ./src/.env/environment.prod.ts
+          sed -i "s|\${FIREBASE_APP_ID}|${{ secrets.FIREBASE_APP_ID }}|g" ./src/.env/environment.prod.ts
       - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
