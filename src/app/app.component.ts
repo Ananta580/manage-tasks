@@ -11,7 +11,6 @@ export class AppComponent implements OnInit {
   selectedTab = 'all';
   constructor(private localStorage: LocalstorageService) {}
   ngOnInit(): void {
-    console.log(environment);
     if (this.localStorage.theme) {
       document.getElementsByTagName('html')[0].className =
         this.localStorage.theme;
