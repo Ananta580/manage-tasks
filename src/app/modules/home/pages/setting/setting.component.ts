@@ -15,6 +15,5 @@ export class SettingComponent {
 
   updateProfile() {
     this.localStorage.todo_local_username = this.name;
-    this.localStorage.user$.next(this.name);
   }
 }

@@ -13,7 +13,6 @@ import { State } from 'src/app/store/models/state.model';
 })
 export class NavBarComponent implements OnInit, OnDestroy {
   user$ = this.localStorage.user$;
-
   showSettingPopup = false;
   showModal = false;
   greeting?: string;
@@ -47,6 +46,14 @@ export class NavBarComponent implements OnInit, OnDestroy {
     } else {
       return 'Good night';
     }
+  }
+  getUserInitials(name: string): string {
+    if (!name) return '';
+    const initials = name
+      .split(' ')
+      .map((n) => n[0])
+      .join('');
+    return initials.toUpperCase();
   }
 
   ngOnDestroy() {

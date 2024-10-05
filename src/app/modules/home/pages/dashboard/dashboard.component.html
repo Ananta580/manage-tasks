@@ -1,137 +1,91 @@
-<div
-  class="flex gap-3 overflow-y-auto bg-white min-h-[calc(100vh-4rem)] dark:bg-gray-700"
->
+<div class="flex gap-3 overflow-y-auto bg-white min-h-[calc(100vh-4rem)] ">
   <section
-    class="flex fixed flex-col w-auto min-w-[250px] bg-slate-100 pt-6 h-screen dark:bg-slate-800"
-  >
+    class="flex fixed flex-col w-auto min-w-[300px] bg-gradient-to-t bg-slate-100  pt-6 h-[calc(100%-100px)]  rounded-2xl m-5">
     <div class="flex flex-col">
-      <div
-        (click)="changeTaskType(tab.key)"
-        *ngFor="let tab of tabs"
-        [ngClass]="
+      <div (click)="changeTaskType(tab.key)" *ngFor="let tab of tabs" [ngClass]="
           tab.key === selectedTab
-            ? 'bg-slate-200 dark:bg-slate-600 dark:text-slate-300'
+            ? ' rounded-full !border-emerald-500 bg-emerald-50'
             : 'text-slate-400'
-        "
-        class="p-3 mx-6 rounded-md cursor-pointer font-normal flex gap-2"
-      >
-        <span
-          class="material-symbols-outlined"
-          [ngClass]="tab.key === selectedTab ? 'fill' : ''"
-        >
-          {{ tab.icon }} </span
-        >{{ tab.title }}
+        " class="p-3 mx-6 border-2 border-transparent rounded-md cursor-pointer font-normal flex gap-2">
+        <span class="material-symbols-outlined" [ngClass]="tab.key === selectedTab ? 'fill' : ''">
+          {{ tab.icon }} </span>{{ tab.title }}
       </div>
     </div>
-    <div
-      class="py-4 mt-6 px-10 flex flex-col gap-1 border-t-2 border-gray-200 dark:border-gray-500"
-    >
-      <span class="mb-3 text-gray-500">Sort By</span>
-      <div
-        (click)="changeSortType(tab.key)"
-        *ngFor="let tab of sortTabs"
-        [ngClass]="
+    <div class="py-4 mt-6 px-5 flex flex-col gap-1 border-t-2 border-gray-200 ">
+      <span class="mb-3 px-5 text-gray-800">SORT BY</span>
+      <div (click)="changeSortType(tab.key)" *ngFor="let tab of sortTabs" [ngClass]="
           tab.key === selectedSortTab
-            ? 'bg-blue-400 text-white dark:text-gray-300 dark:bg-blue-800'
+            ? 'bg-gradient-to-b from-emerald-600 to-emerald-700 text-white '
             : 'text-gray-400'
-        "
-        class="p-3 rounded-md cursor-pointer font-normal flex gap-2"
-      >
-        <span
-          class="material-symbols-outlined"
-          [ngClass]="tab.key === selectedSortTab ? 'fill' : ''"
-        >
-          {{ tab.icon }} </span
-        >{{ tab.title }}
+        " class="p-3 rounded-md cursor-pointer font-normal flex gap-2">
+        <span class="material-symbols-outlined" [ngClass]="tab.key === selectedSortTab ? 'fill' : ''">
+          {{ tab.icon }} </span>{{ tab.title }}
       </div>
     </div>
-    <!-- <div class="py-4 mt-6 px-10 text-gray-300 border-t-2 border-gray-200">
-      Filter By
-    </div> -->
+
   </section>
 
   <section class="ml-[250px] p-6 flex w-full flex-col">
-    <div
-      cdkDropList
-      (cdkDropListDropped)="drop($event)"
-      *ngIf="
+    <div cdkDropList (cdkDropListDropped)="drop($event)" *ngIf="
         (tasks$ | async) && (tasks$ | async)!.length > 0;
         else emptyTemplate
-      "
-    >
-      <div
-        cdkDrag
-        class="py-2 border-b-[1px] border-[#E2E2E2] dark:border-gray-500 flex w-full justify-between items-center bg-white dark:bg-gray-700"
-        *ngFor="let task of tasks$ | async"
-      >
+      ">
+      <div cdkDrag class="py-2 border-b-[1px] border-[#E2E2E2]  flex w-full justify-between items-center bg-white "
+        *ngFor="let task of tasks$ | async">
         <div class="flex gap-3">
           <div>
-            <span
-              (click)="changeStatus(task)"
-              [ngClass]="{
-                'text-blue-600 dark:text-blue-400': task.done,
-                'text-gray-300 hover:text-blue-200': !task.done
-              }"
-              class="material-symbols-outlined text-2xl cursor-pointer font-semibold"
-            >
+            <span (click)="changeStatus(task)" [ngClass]="{
+                'text-emerald-600 ': task.done,
+                'text-gray-300 hover:text-emerald-200': !task.done
+              }" class="material-symbols-outlined text-2xl cursor-pointer font-semibold">
               {{ task.done ? "check_circle" : "radio_button_unchecked" }}
             </span>
           </div>
           <!-- Title & Description -->
           <div class="flex flex-col">
             <span class="flex gap-2 items-center">
-              <span
-                *ngIf="task.group"
-                style="letter-spacing: 0.6px"
-                [style.background]="task.group?.color"
-                class="text-xs text-white dark:text-gray-200 px-2 py-1 rounded-r-full"
-                >{{ task.group?.name }}</span
-              >
-              <span
-                class="font-medium text-lg text-gray-700 dark:text-gray-200"
-                >{{ task.title }}</span
-              >
+              <span *ngIf="task.group" style="letter-spacing: 0.6px" [style.background]="task.group?.color"
+                class="text-xs text-white  px-2 py-1 rounded-r-full">{{ task.group?.name }}</span>
+              <span class="font-medium text-lg text-gray-700 ">{{ task.title }}</span>
             </span>
-            <span class="text-gray-500 dark:text-gray-300">{{
+            <span class="text-gray-500 ">{{
               task.description
-            }}</span>
+              }}</span>
           </div>
         </div>
 
         <div class="flex gap-3">
-          <div
-            (click)="editTask(task.id)"
-            class="flex justify-center text-sm font-medium items-center border-[1px] border-gray-200 dark:border-gray-500 rounded-full px-3 pr-4 py-1 gap-2 text-gray-300 cursor-pointer hover:!text-blue-500 hover:!border-blue-500 dark:hover:!text-blue-300 dark:text-gray-400"
-          >
+          <div (click)="editTask(task.id)"
+            class="flex justify-center text-sm font-medium items-center border-[1px] border-gray-200  rounded-full px-3 pr-4 py-1 gap-2 text-gray-300 cursor-pointer hover:!text-emerald-500 hover:!border-emerald-500  ">
             <span class="material-symbols-outlined text-sm"> edit </span>Edit
           </div>
-          <div
-            (click)="deleteTask(task.id)"
-            class="flex justify-center text-sm font-medium items-center border-[1px] border-gray-200 dark:border-gray-500 rounded-full px-3 pr-4 py-1 gap-2 text-gray-300 dark:text-gray-400 cursor-pointer hover:!text-gray-500 dark:hover:!text-gray-300 hover:!border-gray-500"
-          >
-            <span class="material-symbols-outlined text-sm"> delete </span
-            >Remove
+          <div (click)="deleteTask(task.id)"
+            class="flex justify-center text-sm font-medium items-center border-[1px] border-gray-200  rounded-full px-3 pr-4 py-1 gap-2 text-gray-300  cursor-pointer hover:!text-gray-500  hover:!border-gray-500">
+            <span class="material-symbols-outlined text-sm"> delete </span>Remove
           </div>
         </div>
       </div>
     </div>
     <ng-template #emptyTemplate>
-      <div
-        class="text-gray-400 dark:text-gray-300 justify-center flex items-center flex-col gap-6 h-80 mr-10"
-      >
-        <mat-icon class="scale-[3]">inbox</mat-icon>
-        <h1 class="text-lg">Relax, you have no pending tasks!</h1>
-        <p class="text-md text-gray-500 dark:text-gray-400">
-          Enjoy your free time or take this opportunity to start something new.
+      <div class="flex flex-col justify-center items-center gap-6 h-80 m-auto pt-6">
+        <span class="material-symbols-outlined text-9xl text-gray-400">
+          empty_dashboard
+        </span>
+        <h1 class="text-lg text-gray-800">You’re all caught up!</h1>
+        <p class="text-md w-1/2 text-center text-gray-500">
+          No pending tasks means you have time to pursue your passions!
+          Whether it’s picking up a new hobby or indulging in your favorite series,
+          today is all yours!
         </p>
 
-        <h1
-          [routerLink]="'/app/task'"
-          class="text-lg border-2 rounded-md border-gray-200 dark:border-gray-400 text-gray-400 p-5 px-10 cursor-pointer flex items-center gap-3"
-        >
-          <mat-icon>add_circle_outline</mat-icon> Add New Task
-        </h1>
+        <button
+          class="flex justify-center gap-4 items-center text-lg rounded-md bg-black hover:bg-gray-800 transition-all duration-500 text-white p-5 px-10">
+          <span class="material-symbols-outlined">
+            loupe
+          </span>Add Task to Your List
+        </button>
       </div>
+
     </ng-template>
   </section>
 </div>

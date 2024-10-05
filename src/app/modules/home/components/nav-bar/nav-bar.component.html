@@ -1,113 +1,81 @@
-<div
-  class="fixed top-0 w-full z-10 bg-gradient-to-r from-blue-900 via-blue-600 bg-blue-800 text-gray-50 shadow-sm dark:from-black dark:via-[#0a0a2d] dark:bg-black dark:text-gray-200"
->
-  <div class="flex justify-between items-center px-8 py-3">
-    <div class="flex items-center gap-6">
-      <p class="text-2xl">
-        {{ currentDate$ | async | date : "hh:mm a" }}
-      </p>
-      <!-- "Good morning" Message -->
-      <div class="text-lg">
-        <span class="font-light">{{ greeting }} </span>
-        <span class="font-normal">{{ user$ | async }}</span>
+<ng-container *ngIf="user$ | async as user">
+  <div
+    class="fixed top-0 w-full z-10 bg-gradient-to-r  from-emerald-800 via-emerald-600 to-emerald-800 text-gray-50 shadow-sm  ">
+    <div class="flex justify-between items-center px-8 py-3">
+      <div class="flex items-center gap-5">
+        <span class=" text-4xl material-symbols-outlined">
+          splitscreen_landscape
+        </span>
+        <p class="text-2xl">
+          {{ currentDate$ | async | date : "hh:mm a" }}
+        </p>
+        <!-- "Good morning" Message -->
+        <div class="text-lg flex gap-2 ml-3">
+          <span class="font-light">{{ greeting }} </span>
+          <span class="font-normal">
+            {{user.name}}
+          </span>
+        </div>
+      </div>
+
+      <!-- User Actions -->
+      <div class="flex items-center gap-2">
+        <input id="search" placeholder="Search" (input)="searchTask($event)"
+          class="p-2 px-5 mr-5 bg-white !text-gray-500 rounded-full focus:outline-none focus:ring-1 focus:ring-green-500" />
+        <!-- Add Task Button -->
+        <button routerLink="/app/task"
+          class="h-10 w-10 flex justify-center items-center bg-white  hover:bg-[#06010144]  hover:text-white rounded-full text-green-600">
+          <mat-icon>add</mat-icon>
+        </button>
+
+        <!-- Notifications Button -->
+        <button (click)="changeTheme()"
+          class="h-10 w-10 flex justify-center items-center bg-transparent hover:bg-[#ffffff44] rounded-full ">
+          <mat-icon>{{ theme == "dark" ? "wb_sunny" : "wb_sunny" }}</mat-icon>
+        </button>
+
+        <!-- Settings Button -->
+        <button cdkOverlayOrigin #trigger="cdkOverlayOrigin" (click)="showSettingPopup = !showSettingPopup"
+          class="h-10 w-10 flex justify-center items-center bg-transparent hover:bg-[#ffffff44] rounded-full ">
+          <mat-icon>settings</mat-icon>
+        </button>
+
+        <!-- User Avatar Button -->
+        <button
+          class="h-10 w-10 flex justify-center items-center bg-transparent border-2 bg-black bg-opacity-25 rounded-full text-white">
+          <span>
+            {{ getUserInitials(user.name) }}
+          </span>
+        </button>
       </div>
     </div>
 
-    <!-- User Actions -->
-    <div class="flex items-center gap-2">
-      <input
-        id="search"
-        placeholder="Search"
-        (input)="searchTask($event)"
-        class="p-2 px-5 mr-5 bg-white !text-gray-500 dark:bg-gray-200 dark:placeholder:text-gray-500 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <!-- Add Task Button -->
-      <button
-        routerLink="/app/task"
-        class="h-10 w-10 flex justify-center items-center bg-white dark:bg-gray-300 hover:bg-[#06010144] dark:hover:bg-[#ffffff44] hover:text-white rounded-full text-blue-600"
-      >
-        <mat-icon>add</mat-icon>
-      </button>
-
-      <!-- Notifications Button -->
-      <button
-        (click)="changeTheme()"
-        class="h-10 w-10 flex justify-center items-center bg-transparent hover:bg-[#ffffff44] rounded-full dark:text-gray-300"
-      >
-        <mat-icon>{{ theme == "dark" ? "brightness_3" : "wb_sunny" }}</mat-icon>
-      </button>
-
-      <!-- Settings Button -->
-      <button
-        cdkOverlayOrigin
-        #trigger="cdkOverlayOrigin"
-        (click)="showSettingPopup = !showSettingPopup"
-        class="h-10 w-10 flex justify-center items-center bg-transparent hover:bg-[#ffffff44] rounded-full dark:text-gray-300"
-      >
-        <mat-icon>settings</mat-icon>
-      </button>
-
-      <!-- User Avatar Button -->
-      <button
-        class="h-10 w-10 flex justify-center items-center bg-gray-400 hover:bg-[#ffffff44] rounded-full text-white"
-      >
-        <span>
-          {{ (user$ | async)!.split(" ")[0][0]
-          }}{{
-            (user$ | async)!.split(" ")[1]
-              ? (user$ | async)!.split(" ")[1][0]
-              : ""
-          }}
-        </span>
-      </button>
-    </div>
+    <!-- Setting Popup -->
+    <ng-template cdkConnectedOverlay cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+      [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
+      [cdkConnectedOverlayOpen]="showSettingPopup" (backdropClick)="showSettingPopup = false">
+      <ul class="bg-gray-50  m-2 shadow-md rounded-sm min-w-[190px]">
+        <li class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200  " (click)="showClearDataPopup()">
+          <mat-icon>clear</mat-icon>Clear my data
+        </li>
+        <li class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200 " (click)="updateProfile()">
+          <mat-icon>account_circle</mat-icon>Update Profile
+        </li>
+        <li class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200 ">
+          <mat-icon>public</mat-icon>Switch online
+        </li>
+      </ul>
+    </ng-template>
   </div>
-
-  <!-- Setting Popup -->
-  <ng-template
-    cdkConnectedOverlay
-    cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
-    [cdkConnectedOverlayHasBackdrop]="true"
-    [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="showSettingPopup"
-    (backdropClick)="showSettingPopup = false"
-  >
-    <ul
-      class="bg-gray-50 dark:bg-gray-300 m-2 shadow-md rounded-sm min-w-[190px]"
-    >
-      <li
-        class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 dark:hover:text-gray-200"
-        (click)="showClearDataPopup()"
-      >
-        <mat-icon>clear</mat-icon>Clear my data
-      </li>
-      <li
-        class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 dark:hover:text-gray-200"
-        (click)="updateProfile()"
-      >
-        <mat-icon>account_circle</mat-icon>Update Profile
-      </li>
-      <!-- <li
-        class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 dark:hover:text-gray-200"
-      >
-        <mat-icon>public</mat-icon>Switch online
-      </li> -->
-    </ul>
-  </ng-template>
-</div>
+</ng-container>
 
 <!-- Popup for Confirmation -->
 <app-modal *ngIf="showModal">
-  <div
-    class="p-6 bg-white dark:bg-gray-700 dark:border-gray-200 rounded-md flex flex-col gap-6 dark:text-gray-300"
-  >
+  <div class="p-6 bg-white  rounded-md flex flex-col gap-6 ">
     <!-- Modal Title -->
     <h1 class="font-medium flex justify-between items-center text-lg">
       Confirm Data Deletion
-      <span
-        class="material-symbols-outlined cursor-pointer"
-        (click)="this.showModal = false"
-      >
+      <span class="material-symbols-outlined cursor-pointer" (click)="this.showModal = false">
         close
       </span>
     </h1>
@@ -118,10 +86,7 @@
     </p>
     <!-- Footer Section -->
     <section>
-      <button
-        (click)="clearMyData()"
-        class="px-5 py-3 bg-red-700 text-white dark:text-gray-300 rounded-md hover:bg-red-800"
-      >
+      <button (click)="clearMyData()" class="px-5 py-3 bg-red-700 text-white  rounded-md hover:bg-red-800">
         Confirm
       </button>
     </section>

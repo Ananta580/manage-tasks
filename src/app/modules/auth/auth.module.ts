@@ -10,6 +10,7 @@ import { VerifyEmailComponent } from './pages/verify-email/verify-email.componen
 import { LoginGuard } from 'src/app/guards/login.guard';
 import { RegisterGuard } from 'src/app/guards/register.guard';
 import { VerifyEmailGuard } from 'src/app/guards/verify-email.guard';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,13 @@ import { VerifyEmailGuard } from 'src/app/guards/verify-email.guard';
     StartingComponent,
     VerifyEmailComponent,
   ],
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    RouterModule,
+    MatIconModule,
+  ],
   providers: [
     provideRouter([
       {

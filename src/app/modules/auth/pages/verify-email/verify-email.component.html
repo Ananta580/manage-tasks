@@ -14,9 +14,9 @@
             inbox and click the link to
             verify your email. If you haven't received the email, you can resend the verification link.
         </p>
-        <p class="flex w-full gap-2 font-medium  justify-center">Already verified ? <span [routerLink]="'/auth/login'"
+        <p class="flex w-full gap-2 font-medium  justify-center">Already verified ? <a (click)="checkEmailVerified()"
                 class="text-emerald-600 cursor-pointer">Refresh page
-            </span></p>
+            </a></p>
     </div>
 
     <p class="flex gap-3 items-center justify-center text-gray-500 text-center">
