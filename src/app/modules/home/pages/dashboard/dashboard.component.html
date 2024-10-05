@@ -25,46 +25,49 @@
 
   </section>
 
-  <section class="ml-[250px] p-6 flex w-full flex-col">
+  <section class="ml-[320px] p-6 flex w-full flex-col">
     <div cdkDropList (cdkDropListDropped)="drop($event)" *ngIf="
         (tasks$ | async) && (tasks$ | async)!.length > 0;
         else emptyTemplate
       ">
-      <div cdkDrag class="py-2 border-b-[1px] border-[#E2E2E2]  flex w-full justify-between items-center bg-white "
+      <div cdkDrag
+        class="p-4 rounded-lg border-gray-100 flex w-full justify-between items-center bg-white transition duration-200 hover:bg-gray-50 hover:cursor-pointer"
         *ngFor="let task of tasks$ | async">
-        <div class="flex gap-3">
-          <div>
-            <span (click)="changeStatus(task)" [ngClass]="{
-                'text-emerald-600 ': task.done,
-                'text-gray-300 hover:text-emerald-200': !task.done
-              }" class="material-symbols-outlined text-2xl cursor-pointer font-semibold">
-              {{ task.done ? "check_circle" : "radio_button_unchecked" }}
-            </span>
-          </div>
+
+        <!-- Task Details -->
+        <div class="flex gap-4 items-start">
+          <!-- Status Indicator -->
+          <span (click)="changeStatus(task)" [ngClass]="{
+               'text-emerald-600': task.done,
+               'text-gray-300 hover:text-emerald-500': !task.done
+           }" class="material-symbols-outlined text-3xl cursor-pointer transition duration-200">
+            {{ task.done ? "check_circle" : "radio_button_unchecked" }}
+          </span>
+
           <!-- Title & Description -->
           <div class="flex flex-col">
             <span class="flex gap-2 items-center">
               <span *ngIf="task.group" style="letter-spacing: 0.6px" [style.background]="task.group?.color"
-                class="text-xs text-white  px-2 py-1 rounded-r-full">{{ task.group?.name }}</span>
-              <span class="font-medium text-lg text-gray-700 ">{{ task.title }}</span>
+                class="text-xs text-white px-2 py-1 rounded-full">{{ task.group?.name }}</span>
+              <span class="font-semibold text-lg text-gray-800">{{ task.title }}</span>
             </span>
-            <span class="text-gray-500 ">{{
-              task.description
-              }}</span>
+            <span class="text-gray-600">{{ task.description }}</span>
           </div>
         </div>
 
+        <!-- Action Buttons -->
         <div class="flex gap-3">
           <div (click)="editTask(task.id)"
-            class="flex justify-center text-sm font-medium items-center border-[1px] border-gray-200  rounded-full px-3 pr-4 py-1 gap-2 text-gray-300 cursor-pointer hover:!text-emerald-500 hover:!border-emerald-500  ">
-            <span class="material-symbols-outlined text-sm"> edit </span>Edit
+            class="flex justify-center text-sm font-medium items-center border border-gray-300 rounded-full px-4 py-2 gap-2 text-gray-600 cursor-pointer hover:bg-emerald-500 hover:text-white transition duration-200">
+            <span class="material-symbols-outlined text-sm">edit</span>Edit
           </div>
           <div (click)="deleteTask(task.id)"
-            class="flex justify-center text-sm font-medium items-center border-[1px] border-gray-200  rounded-full px-3 pr-4 py-1 gap-2 text-gray-300  cursor-pointer hover:!text-gray-500  hover:!border-gray-500">
-            <span class="material-symbols-outlined text-sm"> delete </span>Remove
+            class="flex justify-center text-sm font-medium items-center border border-gray-300 rounded-full px-4 py-2 gap-2 text-gray-600 cursor-pointer hover:bg-red-500 hover:text-white transition duration-200">
+            <span class="material-symbols-outlined text-sm">delete</span>Remove
           </div>
         </div>
       </div>
+
     </div>
     <ng-template #emptyTemplate>
       <div class="flex flex-col justify-center items-center gap-6 h-80 m-auto pt-6">

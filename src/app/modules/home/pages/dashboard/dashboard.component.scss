@@ -20,3 +20,21 @@
 .cdk-drag-placeholder {
   opacity: 0;
 }
+
+
+@keyframes fillAndDisappear {
+  0% {
+    background-size: 0% 100%; /* Start with no background fill */
+  }
+  100% {
+    background-size: 100% 100%; /* End with full fill */
+  }
+}
+
+.animate {
+  color: white !important;
+  animation: fillAndDisappear 1s ease forwards; /* 1s fill animation */
+  background: linear-gradient(to right, #6ee7b725, #6ee7b725); /* Solid color fill */
+  background-repeat: no-repeat; /* Ensure background does not repeat */
+  background-position: left; /* Start from the left */
+}

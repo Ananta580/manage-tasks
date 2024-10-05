@@ -146,9 +146,19 @@ export class DashboardComponent implements OnInit {
   }
 
   changeStatus(task: Task) {
-    var payload = { ...task };
-    payload.done = !payload.done;
+    const payload = {
+      ...task,
+      done: !task.done,
+      animate: task.done ? false : true,
+    };
     this.store.dispatch(EditTaskAction({ payload }));
+
+    if (payload.animate) {
+      setTimeout(() => {
+        const updatedPayload = { ...payload, animate: false };
+        this.store.dispatch(EditTaskAction({ payload: updatedPayload }));
+      }, 1000);
+    }
   }
 
   editTask(id: number) {
