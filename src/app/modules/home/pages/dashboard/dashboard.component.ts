@@ -58,6 +58,9 @@ export class DashboardComponent implements OnInit {
 
   tasks$!: Observable<Array<Task>>;
 
+  activeMenu: number | null = null; // To track the active menu
+  confirmingDelete: number | null = null; // To track the confirmation state
+
   constructor(private store: Store<State>, private router: Router) {}
 
   ngOnInit(): void {
@@ -165,10 +168,9 @@ export class DashboardComponent implements OnInit {
     this.router.navigateByUrl(`/app/task/${id}`);
   }
 
-  deleteTask(id: number) {
-    const payload = id;
-    this.store.dispatch(DeleteTaskAction({ payload }));
-  }
+  // deleteTask(id: number) {
+
+  // }
 
   drop(event: any) {
     var prev = event.previousIndex;
@@ -191,5 +193,26 @@ export class DashboardComponent implements OnInit {
       );
       sth.unsubscribe();
     }, 100);
+  }
+
+  toggleMenu(taskId: number): void {
+    this.activeMenu = this.activeMenu === taskId ? null : taskId;
+    this.confirmingDelete = null;
+  }
+
+  confirmDelete(taskId: number): void {
+    this.confirmingDelete = taskId;
+    this.activeMenu = taskId;
+  }
+
+  closeMenu(): void {
+    this.confirmingDelete = null;
+    this.activeMenu = null;
+  }
+
+  deleteTask(taskId: number): void {
+    const payload = taskId;
+    this.store.dispatch(DeleteTaskAction({ payload }));
+    this.closeMenu();
   }
 }
