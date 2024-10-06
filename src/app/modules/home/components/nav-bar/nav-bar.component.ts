@@ -1,10 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { BehaviorSubject, Observable, Subscription, interval, map } from 'rxjs';
-import { LocalstorageService } from 'src/app/services/localstorage.service';
-import { searchTaskAction } from 'src/app/store/actions/tasks.actions';
-import { State } from 'src/app/store/models/state.model';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { LocalstorageService } from 'src/app/services/local.storage.service';
+import { TaskStorageService } from 'src/app/services/task.storage.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -24,7 +22,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   private subscription?: Subscription;
   constructor(
     private router: Router,
-    private store: Store<State>,
+    private taskService: TaskStorageService,
     private localStorage: LocalstorageService
   ) {}
 
@@ -93,8 +91,6 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   searchTask(input: any) {
-    this.store.dispatch(
-      searchTaskAction({ payload: input.target.value.toLowerCase() })
-    );
+    this.taskService.searchTasks(input.target.value.toLowerCase());
   }
 }

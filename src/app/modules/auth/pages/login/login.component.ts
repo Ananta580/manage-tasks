@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Form, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth.service';
-import { LocalstorageService } from 'src/app/services/localstorage.service';
+import { AuthService } from 'src/app/services/firebase/auth.service';
+import { LocalstorageService } from 'src/app/services/local.storage.service';
 import { ToastService } from 'src/app/services/toast.service';
 
 @Component({

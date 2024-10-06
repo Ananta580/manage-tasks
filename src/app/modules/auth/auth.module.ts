@@ -9,7 +9,6 @@ import { StartingComponent } from './pages/starting/starting.component';
 import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
 import { LoginGuard } from 'src/app/guards/login.guard';
 import { RegisterGuard } from 'src/app/guards/register.guard';
-import { VerifyEmailGuard } from 'src/app/guards/verify-email.guard';
 import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({

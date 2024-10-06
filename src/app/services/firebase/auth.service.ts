@@ -9,10 +9,10 @@ import {
   signInWithPopup,
   UserCredential,
 } from '@angular/fire/auth';
-import { User, UserLogin, UserRegister } from '../store/models/user';
+import { User, UserLogin, UserRegister } from '../../models/user';
 import { BehaviorSubject, delay } from 'rxjs';
-import { LocalstorageService } from './localstorage.service';
-import { ToastService } from './toast.service';
+import { LocalstorageService } from '../local.storage.service';
+import { ToastService } from '../toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -82,7 +82,6 @@ export class AuthService {
       const userDocRef = doc(this._firestore, `users/${auth.user.uid}`);
       const userDoc = await getDoc(userDocRef);
       const userData = userDoc.data() as User;
-
       const user: User = {
         ...auth.user,
         password: userData.password,
@@ -90,7 +89,6 @@ export class AuthService {
         platformId: userData.platformId || '',
       };
       delete user.password;
-      this._userSubject.next(user);
       this.localStorageService.todo_cloud_user = user;
       return user;
     } catch (error: any) {

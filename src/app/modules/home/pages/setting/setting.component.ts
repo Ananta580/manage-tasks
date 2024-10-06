@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LocalstorageService } from 'src/app/services/localstorage.service';
+import { LocalstorageService } from 'src/app/services/local.storage.service';
 
 @Component({
   selector: 'app-setting',

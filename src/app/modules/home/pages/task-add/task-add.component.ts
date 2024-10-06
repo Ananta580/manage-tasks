@@ -1,29 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { map } from 'rxjs';
-import {
-  AddTaskAction,
-  EditTaskAction,
-} from 'src/app/store/actions/tasks.actions';
-import { State } from 'src/app/store/models/state.model';
-import { Task } from 'src/app/store/models/tasks';
+import { Task } from 'src/app/models/tasks';
+import { TaskStorageService } from 'src/app/services/task.storage.service';
+import { uid } from 'uid';
 @Component({
   selector: 'app-task-add',
   templateUrl: './task-add.component.html',
 })
 export class TaskAddComponent implements OnInit {
   isOpen = false;
-  maxId = 0;
-  maxOrder = 0;
   taskForm: FormGroup;
 
   taskId: any = null;
   editTaskPlaceholder!: Task;
   constructor(
     private fb: FormBuilder,
-    private store: Store<State>,
+    private taskService: TaskStorageService,
     private router: Router,
     private _route: ActivatedRoute
   ) {
@@ -49,20 +42,15 @@ export class TaskAddComponent implements OnInit {
   }
 
   loadTask() {
-    this.store
-      .select((store) => store.task)
-      .subscribe({
-        next: (res) => {
-          if (res.length > 0) {
-            this.maxId = Math.max(...res.map((o) => o.id));
-            this.maxOrder = Math.max(...res.map((o) => o.order));
-          }
-          if (this.taskId) {
-            this.editTaskPlaceholder = res.find((x) => x.id == this.taskId)!;
-            this.taskForm.patchValue(this.editTaskPlaceholder);
-          }
-        },
+    if (this.taskId) {
+      console.log(this.taskId);
+      this.taskService.getTaskById(this.taskId).then((data) => {
+        if (data) {
+          this.editTaskPlaceholder = data;
+          this.taskForm.patchValue(data);
+        }
       });
+    }
   }
 
   saveTask() {
@@ -76,16 +64,17 @@ export class TaskAddComponent implements OnInit {
     }
   }
 
-  addTask() {
+  async addTask() {
     const { value } = this.taskForm;
     const payload: Task = {
-      id: this.maxId + 1,
+      id: uid(),
       ...value,
       done: false,
       date: new Date(),
-      order: this.maxOrder + 1,
+      order: ((await this.taskService.getMaxOrder()) ?? 0) + 1,
     };
-    this.store.dispatch(AddTaskAction({ payload }));
+    console.log(payload);
+    this.taskService.addTask(payload);
     this.router.navigateByUrl('/');
   }
 
@@ -93,13 +82,14 @@ export class TaskAddComponent implements OnInit {
     const { value } = this.taskForm;
     const payload: Task = {
       id: Number(this.taskId),
+      uid: this.editTaskPlaceholder.uid,
       ...value,
       done: this.editTaskPlaceholder.done,
       date: this.editTaskPlaceholder.date,
       order: this.editTaskPlaceholder.order,
     };
     console.log(payload);
-    this.store.dispatch(EditTaskAction({ payload }));
+    this.taskService.editTask(payload);
     this.router.navigateByUrl('/');
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalstorageService } from './services/localstorage.service';
+import { LocalstorageService } from './services/local.storage.service';
 import { environment } from 'src/.env/environment';
 
 @Component({

@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { map, Observable } from 'rxjs';
-import {
-  DeleteTaskAction,
-  EditTaskAction,
-  ReorderTaskAction,
-} from 'src/app/store/actions/tasks.actions';
-import { State } from 'src/app/store/models/state.model';
-import { Task } from 'src/app/store/models/tasks';
+import { Task } from 'src/app/models/tasks';
+import { LocalstorageService } from 'src/app/services/local.storage.service';
+import { TaskStorageService } from 'src/app/services/task.storage.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -56,12 +51,16 @@ export class DashboardComponent implements OnInit {
 
   selectedSortTab = 'order';
 
-  tasks$!: Observable<Array<Task>>;
+  tasks$!: Observable<Task[]>;
 
-  activeMenu: number | null = null; // To track the active menu
-  confirmingDelete: number | null = null; // To track the confirmation state
+  activeMenu: Task | null = null; // To track the active menu
+  confirmingDelete: Task | null = null; // To track the confirmation state
 
-  constructor(private store: Store<State>, private router: Router) {}
+  constructor(
+    private taskService: TaskStorageService,
+    private router: Router,
+    private localStorage: LocalstorageService
+  ) {}
 
   ngOnInit(): void {
     // Sort by order at first
@@ -72,28 +71,24 @@ export class DashboardComponent implements OnInit {
     this.selectedTab = tab;
     switch (tab) {
       case 'todo':
-        this.tasks$ = this.store
-          .select((store) => store.task)
-          .pipe(
-            map((data) => {
-              var filteredData = [];
-              filteredData = [...data];
-              filteredData = filteredData.filter((x) => x.done === false);
-              return filteredData;
-            })
-          );
+        this.tasks$ = this.taskService.tasks$.pipe(
+          map((data) => {
+            var filteredData = [];
+            filteredData = [...data];
+            filteredData = filteredData.filter((x) => x.done === false);
+            return filteredData;
+          })
+        );
         break;
       case 'done':
-        this.tasks$ = this.store
-          .select((store) => store.task)
-          .pipe(
-            map((data) => {
-              var filteredData = [];
-              filteredData = [...data];
-              filteredData = filteredData.filter((x) => x.done === true);
-              return filteredData;
-            })
-          );
+        this.tasks$ = this.taskService.tasks$.pipe(
+          map((data) => {
+            var filteredData = [];
+            filteredData = [...data];
+            filteredData = filteredData.filter((x) => x.done === true);
+            return filteredData;
+          })
+        );
         break;
       default:
         this.changeSortType('order');
@@ -105,45 +100,39 @@ export class DashboardComponent implements OnInit {
     this.selectedSortTab = tab;
     switch (tab) {
       case 'date':
-        this.tasks$ = this.store
-          .select((store) => store.task)
-          .pipe(
-            map((data) => {
-              var sortData = [];
-              sortData = [...data];
-              sortData.sort(
-                (a, b) =>
-                  new Date(b.date).getTime() - new Date(a.date).getTime()
-              );
-              return sortData;
-            })
-          );
+        this.tasks$ = this.taskService.tasks$.pipe(
+          map((data) => {
+            var sortData = [];
+            sortData = [...data];
+            sortData.sort(
+              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+            );
+            return sortData;
+          })
+        );
         break;
       case 'group':
-        this.tasks$ = this.store
-          .select((store) => store.task)
-          .pipe(
-            map((data) => {
-              var sortData = [];
-              sortData = [...data];
-              sortData.sort((x) => x.group?.name);
-              return sortData;
-            })
-          );
+        this.tasks$ = this.taskService.tasks$.pipe(
+          map((data) => {
+            var sortData = [];
+            sortData = [...data];
+            sortData.sort((x) => x.group?.name);
+            return sortData;
+          })
+        );
         break;
       default:
-        this.tasks$ = this.store
-          .select((store) => store.task)
-          .pipe(
-            map((data) => {
-              var sortData = [];
-              sortData = [...data];
-              sortData.sort((a, b) => {
-                return a.order < b.order ? -1 : 1;
-              });
-              return sortData;
-            })
-          );
+        this.tasks$ = this.taskService.tasks$.pipe(
+          map((data) => {
+            console.log(data);
+            var sortData = [];
+            sortData = [...data];
+            sortData.sort((a, b) => {
+              return a.order < b.order ? -1 : 1;
+            });
+            return sortData;
+          })
+        );
         break;
     }
   }
@@ -154,33 +143,33 @@ export class DashboardComponent implements OnInit {
       done: !task.done,
       animate: task.done ? false : true,
     };
-    this.store.dispatch(EditTaskAction({ payload }));
+    this.taskService.editTask(payload);
 
     if (payload.animate) {
       setTimeout(() => {
         const updatedPayload = { ...payload, animate: false };
-        this.store.dispatch(EditTaskAction({ payload: updatedPayload }));
+        this.taskService.editTask(updatedPayload);
       }, 1000);
     }
   }
 
-  editTask(id: number) {
-    this.router.navigateByUrl(`/app/task/${id}`);
+  editTask(task: Task) {
+    this.router.navigateByUrl(
+      `/app/task/${this.localStorage.isLocal ? task.id : task.uid}`
+    );
   }
-
-  // deleteTask(id: number) {
-
-  // }
 
   drop(event: any) {
     var prev = event.previousIndex;
     var current = event.currentIndex;
     var prevItem: any = null;
     var currentItem: any = null;
-    var sth = this.tasks$.subscribe({
+    var sth = this.tasks$?.subscribe({
       next: (res) => {
-        prevItem = { ...res.find((x) => x.order == prev + 1) };
-        currentItem = { ...res.find((x) => x.order == current + 1) };
+        if (res) {
+          prevItem = { ...res.find((x) => x.order == prev + 1) };
+          currentItem = { ...res.find((x) => x.order == current + 1) };
+        }
       },
     });
     setTimeout(() => {
@@ -188,21 +177,19 @@ export class DashboardComponent implements OnInit {
       var currentOrder = JSON.parse(JSON.stringify(currentItem.order));
       prevItem.order = currentOrder;
       currentItem.order = prevOrder;
-      this.store.dispatch(
-        ReorderTaskAction({ payload: [prevItem, currentItem] })
-      );
-      sth.unsubscribe();
+      this.taskService.reorderTasks(prevItem, currentItem);
+      sth?.unsubscribe();
     }, 100);
   }
 
-  toggleMenu(taskId: number): void {
-    this.activeMenu = this.activeMenu === taskId ? null : taskId;
+  toggleMenu(task: Task): void {
+    this.activeMenu = this.activeMenu === task ? null : task;
     this.confirmingDelete = null;
   }
 
-  confirmDelete(taskId: number): void {
-    this.confirmingDelete = taskId;
-    this.activeMenu = taskId;
+  confirmDelete(task: Task): void {
+    this.confirmingDelete = task;
+    this.activeMenu = task;
   }
 
   closeMenu(): void {
@@ -210,9 +197,8 @@ export class DashboardComponent implements OnInit {
     this.activeMenu = null;
   }
 
-  deleteTask(taskId: number): void {
-    const payload = taskId;
-    this.store.dispatch(DeleteTaskAction({ payload }));
+  deleteTask(task: Task): void {
+    this.taskService.deleteTask(task);
     this.closeMenu();
   }
 }

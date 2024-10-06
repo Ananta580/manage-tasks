@@ -1,5 +1,7 @@
 export interface Group {
-  id: number;
+  id: any;
+  uid?: any;
+  documentId?: any;
   name: string;
   color: string;
 }

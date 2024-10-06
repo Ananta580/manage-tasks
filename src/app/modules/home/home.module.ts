@@ -11,11 +11,10 @@ import { HomeComponent } from './home.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TaskAddComponent } from './pages/task-add/task-add.component';
-import { StoreModule } from '@ngrx/store';
-import { TaskReducer } from 'src/app/store/reducers/task.reducer';
 import { GroupListComponent } from './components/group-list/group-list.component';
 import { SharedModule } from '../shared/shared.module';
 import { SettingComponent } from './pages/setting/setting.component';
+import { TaskStorageService } from 'src/app/services/task.storage.service';
 
 @NgModule({
   declarations: [
@@ -38,5 +37,6 @@ import { SettingComponent } from './pages/setting/setting.component';
     OverlayModule,
     HomeRoutingModule,
   ],
+  providers: [],
 })
 export class HomeModule {}

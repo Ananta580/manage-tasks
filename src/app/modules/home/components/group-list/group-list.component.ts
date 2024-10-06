@@ -1,14 +1,16 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
 import {
-  AddGroupAction,
-  DeleteGroupAction,
-  EditGroupAction,
-} from 'src/app/store/actions/group.actions';
-import { Group } from 'src/app/store/models/group';
-import { State } from 'src/app/store/models/state.model';
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  OnDestroy,
+} from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { Group } from 'src/app/models/group';
+import { GroupStorageService } from 'src/app/services/group.storage.service';
+import { uid } from 'uid';
 
 @Component({
   selector: 'app-group-list',
@@ -20,13 +22,18 @@ export class GroupListComponent implements OnInit {
 
   maxId = 0;
   groupForm: FormGroup;
+  private destroy$ = new Subject<void>();
 
   editId: any = null;
+  editUid: any = null;
 
   @Input() selectedGroup = null;
 
   @Output() groupSelected = new EventEmitter<Group | undefined>();
-  constructor(private store: Store<State>, private fb: FormBuilder) {
+  constructor(
+    private groupService: GroupStorageService,
+    private fb: FormBuilder
+  ) {
     this.groupForm = this.fb.group({
       name: ['', Validators.required],
       color: ['#000000'],
@@ -34,18 +41,7 @@ export class GroupListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.groups$ = this.store.select((store) => store.group);
-    this.loadGroup();
-  }
-
-  loadGroup() {
-    this.groups$.subscribe({
-      next: (res) => {
-        if (res.length > 0) {
-          this.maxId = Math.max(...res.map((o) => o.id));
-        }
-      },
-    });
+    this.groups$ = this.groupService.groups$;
   }
 
   closeModal() {
@@ -59,14 +55,14 @@ export class GroupListComponent implements OnInit {
       return;
     }
     const payload: Group = {
-      id: this.maxId + 1,
+      id: uid(),
       name: this.groupForm.get('name')?.value,
       color: this.groupForm.get('color')?.value,
     };
     this.groupSelected.emit(payload);
-    this.store.dispatch(AddGroupAction({ payload }));
+    this.groupService.addGroup(payload);
     // Reset Form
-    this.groupForm.reset();
+    this.groupForm.controls['name'].reset();
     this.showModal = false;
   }
 
@@ -75,25 +71,27 @@ export class GroupListComponent implements OnInit {
       return;
     }
     const payload: Group = {
+      uid: this.editUid,
       id: this.editId,
       name: this.groupForm.get('name')?.value,
       color: this.groupForm.get('color')?.value,
     };
-    this.store.dispatch(EditGroupAction({ payload }));
+    this.groupService.editGroup(payload);
     // Reset Form
     this.groupForm.reset();
     this.showModal = false;
     this.editId = null;
+    this.editUid = null;
   }
 
   patchGroup(group: Group) {
+    this.editUid = group.uid;
     this.editId = group.id;
     this.groupForm.patchValue(group);
     this.showModal = true;
   }
 
   deleteGroup(group: Group) {
-    const payload = group.id;
-    this.store.dispatch(DeleteGroupAction({ payload }));
+    this.groupService.deleteGroup(group);
   }
 }

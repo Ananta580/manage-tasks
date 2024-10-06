@@ -1,5 +1,6 @@
 export interface Task {
-  id: number;
+  id: any;
+  uid: any;
   order: number;
   title: string;
   done: boolean;
