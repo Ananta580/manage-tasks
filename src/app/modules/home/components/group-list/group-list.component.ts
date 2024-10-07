@@ -69,6 +69,7 @@ export class GroupListComponent implements OnInit {
       name: this.groupForm.get('name')?.value,
       color: this.groupForm.get('color')?.value,
     };
+    this.groupSelected.emit(payload);
     this.groupService.editGroup(payload);
     // Reset Form
     this.groupForm.reset();

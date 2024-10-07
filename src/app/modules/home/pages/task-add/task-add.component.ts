@@ -82,14 +82,13 @@ export class TaskAddComponent implements OnInit {
   editTask() {
     const { value } = this.taskForm;
     const payload: Task = {
-      id: Number(this.taskId),
+      id: this.taskId,
       uid: this.editTaskPlaceholder.uid,
       ...value,
       done: this.editTaskPlaceholder.done,
       date: this.editTaskPlaceholder.date,
       order: this.editTaskPlaceholder.order,
     };
-    console.log(payload);
     this.taskService.editTask(payload);
     this.router.navigateByUrl('/');
   }
