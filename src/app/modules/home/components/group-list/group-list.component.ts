@@ -1,13 +1,6 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  OnDestroy,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Group } from 'src/app/models/group';
 import { GroupStorageService } from 'src/app/services/group.storage.service';
 import { uid } from 'uid';
@@ -27,7 +20,7 @@ export class GroupListComponent implements OnInit {
   editId: any = null;
   editUid: any = null;
 
-  @Input() selectedGroup = null;
+  @Input() selectedGroup?: Group;
 
   @Output() groupSelected = new EventEmitter<Group | undefined>();
   constructor(
@@ -84,14 +77,21 @@ export class GroupListComponent implements OnInit {
     this.editUid = null;
   }
 
-  patchGroup(group: Group) {
+  patchGroup(event: any, group: Group) {
+    event.stopPropagation();
     this.editUid = group.uid;
     this.editId = group.id;
     this.groupForm.patchValue(group);
     this.showModal = true;
   }
 
-  deleteGroup(group: Group) {
+  deleteGroup(event: any, group: Group) {
+    event.stopPropagation();
     this.groupService.deleteGroup(group);
+  }
+
+  selectGroup(group: Group | undefined) {
+    this.selectedGroup = group;
+    this.groupSelected.emit(group);
   }
 }

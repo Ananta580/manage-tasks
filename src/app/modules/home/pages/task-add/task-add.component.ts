@@ -43,8 +43,8 @@ export class TaskAddComponent implements OnInit {
 
   loadTask() {
     if (this.taskId) {
-      console.log(this.taskId);
       this.taskService.getTaskById(this.taskId).then((data) => {
+        console.log(data);
         if (data) {
           this.editTaskPlaceholder = data;
           this.taskForm.patchValue(data);

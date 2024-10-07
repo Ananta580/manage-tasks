@@ -46,6 +46,6 @@ export class LocalstorageService {
     localStorage.setItem('isLocal', JSON.stringify(isLocal));
   }
   get isLocal() {
-    return JSON.parse(localStorage.getItem('isLocal') ?? 'false') as boolean;
+    return JSON.parse(localStorage.getItem('isLocal') ?? 'true') as boolean;
   }
 }

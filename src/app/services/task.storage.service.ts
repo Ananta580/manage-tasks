@@ -27,9 +27,8 @@ export class TaskStorageService {
 
   getTaskById(taskId: string): Promise<Task | undefined> {
     if (this.localStore.isLocal) {
-      return Promise.resolve(
-        this.tasksSubject.value.find((task) => task.id === taskId)
-      );
+      const task = this.tasksSubject.value.find((task) => task.id == taskId);
+      return Promise.resolve(task ? task : undefined);
     } else {
       return this.taskService.getTaskById(taskId);
     }
