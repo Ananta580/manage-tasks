@@ -37,6 +37,7 @@ export class TaskAddComponent implements OnInit {
   }
 
   setGroup(group: any) {
+    console.log(group);
     this.group?.setValue(group);
     this.isOpen = false;
   }

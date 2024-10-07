@@ -62,7 +62,7 @@ export class TaskStorageService {
     if (this.localStore.isLocal) {
       const currentTasks = this.tasksSubject.value;
       const newTasks = currentTasks.map((task) =>
-        task.id === updatedTask.id ? { ...updatedTask } : task
+        task.id == updatedTask.id ? { ...updatedTask } : task
       );
       localStorage.setItem('tasks', JSON.stringify(newTasks));
       this.tasksSubject.next(newTasks);

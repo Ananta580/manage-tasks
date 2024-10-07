@@ -29,7 +29,7 @@ export class GroupListComponent implements OnInit {
   ) {
     this.groupForm = this.fb.group({
       name: ['', Validators.required],
-      color: ['#000000'],
+      color: ['#048146'],
     });
   }
 
