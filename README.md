@@ -1,27 +1,48 @@
-# YourTodo
+# Manage Tasks - ToDo App
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.1.5.
+## Overview
 
-## Development server
+Manage Tasks is a simple and efficient ToDo application designed to help you keep track of your tasks and stay organized.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Features
 
-## Code scaffolding
+- Add, edit, and delete tasks
+- Mark tasks as completed
+- Set due dates and reminders
+- Categorize tasks with tags
+- Search and filter tasks
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Installation
 
-## Build
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/manage-tasks.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd manage-tasks
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Usage
 
-## Running unit tests
+1. Start the application:
+   ```bash
+   npm start
+   ```
+2. Open your browser and go to `http://localhost:3000`
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Contributing
 
-## Running end-to-end tests
+Contributions are welcome! Please fork the repository and create a pull request.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## License
 
-## Further help
+This project is licensed under the MIT License.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Contact
+
+For any inquiries, please contact [yourname@example.com](mailto:yourname@example.com).
