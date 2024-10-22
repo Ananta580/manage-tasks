@@ -17,8 +17,8 @@
 
       <!-- Actions -->
       <div class="flex gap-3 z-1 h-fit rounded-full text-white" [style.backgroundColor]="group.color">
-        <span class="material-symbols-outlined text-lg pl-2 pr-1" (click)="patchGroup($event,group)">edit</span>
-        <span class="material-symbols-outlined text-lg pr-2 pl-1" (click)="deleteGroup($event,group)">delete</span>
+        <span class="material-symbols-outlined  pl-2 pr-1" (click)="patchGroup($event,group)">edit</span>
+        <span class="material-symbols-outlined  pr-2 pl-1" (click)="deleteGroup($event,group)">delete</span>
       </div>
     </li>
     <li
@@ -61,7 +61,7 @@
         <div class="flex w-full gap-4">
           <input class="h-auto w-20 p-0 rounded-md cursor-pointer transition duration-150" type="color"
             formControlName="color" />
-          <input class="p-5 text-lg w-full border-gray-200 font-light focus:ring-2 ring-black"
+          <input class="p-5  w-full border-gray-200 font-light focus:ring-2 ring-black"
             placeholder="Name your task group" formControlName="name" />
         </div>
 
@@ -70,7 +70,7 @@
 
       <section class="border-t pt-5 -mx-5 px-5">
         <button (click)="editId ? editGroup() : addGroup()"
-          class="flex gap-3 justify-center items-center text-lg rounded-md bg-black hover:bg-slate-800 text-white p-4 w-full">
+          class="flex gap-3 justify-center items-center  rounded-md bg-black hover:bg-slate-800 text-white p-4 w-full">
 
           <span class="material-symbols-outlined">outbound</span>
           {{editId?"Save Changes to Group" : "Create New Group" }}

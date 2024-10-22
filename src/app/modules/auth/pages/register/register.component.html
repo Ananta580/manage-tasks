@@ -1,7 +1,7 @@
 <div class="flex w-full h-screen bg-white justify-start flex-col px-10 py-20 gap-20">
     <div
         class="flex flex-col gap-3 font-light justify-center items-start p-8 border-2 rounded-xl border-green-600 bg-green-50 w-full">
-        <div class="justify-center text-xl mb-5 w-full flex items-center gap-10">
+        <div class="justify-center text-lg mb-5 w-full flex items-center gap-10">
             <p *ngFor="let type of storageTypes" class="flex items-center gap-1 cursor-pointer font-medium" [ngClass]="{
              'text-green-600': selectedStorageType == type.value,
              'text-gray-400 cursor-pointer': selectedStorageType != type.value
@@ -18,32 +18,32 @@
 
     <!-- Local storage section -->
     <div *ngIf="selectedStorageType=='local'" class="flex flex-col gap-5">
-        <input class="p-5 text-lg font-light border-gray-200 bg-white focus:ring-2 ring-black"
-            placeholder="What should we call you?" [(ngModel)]="name" />
+        <input class="p-5 py-3 border-gray-200 bg-white focus:ring-1 ring-black" placeholder="What should we call you?"
+            [(ngModel)]="name" />
         <button (click)="doLogin()"
-            class="flex justify-center items-center text-lg rounded-md bg-black hover:bg-gray-800 transition-all duration-500 text-white p-5">
+            class="flex justify-center items-center  rounded-md bg-black hover:bg-gray-800 transition-all duration-500 text-white p-5 py-3">
             Start Managing
             <span id="login-arrow" class="material-symbols-outlined ml-5">
                 arrow_right_alt
             </span>
         </button>
-        <p class="flex w-full gap-2  justify-center">Already have your account ? <span [routerLink]="'/auth/login'"
+        <p class="flex w-full gap-2 justify-center">Already have your account ? <span [routerLink]="'/auth/login'"
                 class="text-emerald-600 cursor-pointer">Log in
             </span></p>
     </div>
 
     <!-- Cloud storage section -->
     <div [formGroup]="registerForm" *ngIf="selectedStorageType=='cloud'" class="flex flex-col gap-5">
-        <input class="p-5 text-lg font-light border-gray-200 bg-white focus:ring-2 ring-black"
-            placeholder="What should we call you?" formControlName="displayName" />
+        <input class="p-5 py-3  border-gray-200 bg-white focus:ring-1 ring-black" placeholder="What should we call you?"
+            formControlName="displayName" />
         <div class="flex gap-5">
-            <input class="p-5 w-1/2 text-lg font-light border-gray-200 bg-white focus:ring-2 ring-black"
+            <input class="p-5 py-3 w-1/2  border-gray-200 bg-white focus:ring-1 ring-black"
                 placeholder="Your best email" formControlName="email" />
-            <input class="p-5 w-1/2 text-lg font-light border-gray-200 bg-white focus:ring-2 ring-black"
+            <input class="p-5 py-3 w-1/2  border-gray-200 bg-white focus:ring-1 ring-black"
                 placeholder="Choose a secure password" formControlName="password" />
         </div>
         <button (click)="doLogin()"
-            class="flex justify-center items-center text-lg rounded-md bg-black hover:bg-gray-800 transition-all duration-500 text-white p-5">
+            class="flex justify-center items-center  rounded-md bg-black hover:bg-gray-800 transition-all duration-500 text-white p-5 py-3">
             Create Your Account
             <span id="login-arrow" class="material-symbols-outlined ml-5">
                 arrow_right_alt

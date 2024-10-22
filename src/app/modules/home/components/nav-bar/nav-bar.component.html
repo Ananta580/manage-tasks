@@ -10,7 +10,7 @@
           {{ currentDate$ | async | date : "hh:mm a" }}
         </p>
         <!-- "Good morning" Message -->
-        <div class="text-lg flex gap-2 ml-3">
+        <div class=" flex gap-2 ml-3">
           <span class="font-light">{{ greeting }} </span>
           <span class="font-normal">
             {{user?.name}}
@@ -73,7 +73,7 @@
 <app-modal *ngIf="showModal">
   <div class="p-6 bg-white  rounded-md flex flex-col gap-6 ">
     <!-- Modal Title -->
-    <h1 class="font-medium flex justify-between items-center text-lg">
+    <h1 class="font-medium flex justify-between items-center ">
       Confirm Data Deletion
       <span class="material-symbols-outlined cursor-pointer" (click)="this.showModal = false">
         close
