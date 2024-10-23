@@ -36,7 +36,10 @@ export class LoginComponent {
         .login(this.loginForm.value)
         .then((auth) => {
           if (auth) {
-            this.toastService.showSuccess('Login successfull');
+            this.localStorage.isLocal = false;
+            this.toastService.showSuccess(
+              'Welcome back! You have successfully logged in.'
+            );
             this.router.navigate(['/']);
           }
         })

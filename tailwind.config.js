@@ -5,6 +5,9 @@ module.exports = {
   theme: {},
   variants: {
     extend: {
+      screens: {
+        ls: "900px",
+      },
       brightness: ["dark"],
     },
   },

@@ -1,9 +1,45 @@
-<div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 text-white text-center py-3 px-5 rounded-lg shadow-lg opacity-90"
+<div class="fixed bottom-4 left-4 min-w-[300px] border-l-8 backdrop-blur-md bg-white flex items-center justify-between gap-4 px-5 py-3 rounded-md shadow-md bg-opacity-50"
     [ngClass]="{
-        'bg-green-500': type === 'success',
-        'bg-red-600': type === 'error',
-        'bg-yellow-500': type === 'warning',
-        'bg-blue-500': type === 'info'
-    }" style="backdrop-filter: blur(10px);">
-    {{ message }}
+        'border-emerald-600': type === 'success',
+        'border-red-600': type === 'error',
+        'border-yellow-500': type === 'warning',
+        'border-blue-500': type === 'info'
+     }">
+    <div class="flex items-center gap-4">
+        <span class="material-symbols-outlined fill" [ngClass]="{
+            'text-emerald-600': type === 'success',
+            'text-red-600': type === 'error',
+            'text-yellow-500': type === 'warning',
+            'text-blue-500': type === 'info'
+         }">
+
+            <ng-container [ngSwitch]="type">
+                <ng-container *ngSwitchCase="'success'">
+                    check_circle
+                </ng-container>
+                <ng-container *ngSwitchCase="'error'">
+                    cancel
+                </ng-container>
+                <ng-container *ngSwitchCase="'warning'">
+                    warning
+                </ng-container>
+                <ng-container *ngSwitchCase="'info'">
+                    info
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                    info
+                </ng-container>
+            </ng-container>
+
+        </span>
+        <div>
+            <p class="font-semibold">{{type | titlecase}}</p>
+            <p class="text-gray-500 text-sm">{{message}}</p>
+        </div>
+    </div>
+    <button class="text-gray-500 ml-3 hover:text-black">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
 </div>
