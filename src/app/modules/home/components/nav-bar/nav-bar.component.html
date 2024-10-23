@@ -1,12 +1,10 @@
 <ng-container *ngIf="user$ | async as user">
   <div
-    class="fixed top-0 w-full z-10 bg-gradient-to-r  from-emerald-800 via-emerald-600 to-emerald-800 text-gray-50 shadow-sm  ">
+    class="fixed top-0 w-full z-10 bg-gradient-to-r  from-emerald-800 via-emerald-600 to-emerald-800 text-gray-50 shadow-sm">
     <div class="flex justify-between items-center px-8 py-3">
       <div class="flex items-center gap-5">
-        <span class=" text-4xl material-symbols-outlined">
-          splitscreen_landscape
-        </span>
-        <p class="text-2xl">
+        <img class="h-6" src="../../../../../assets/logo.svg" />
+        <p class="text-lg">
           {{ currentDate$ | async | date : "hh:mm a" }}
         </p>
         <!-- "Good morning" Message -->
@@ -71,9 +69,9 @@
 
 <!-- Popup for Confirmation -->
 <app-modal *ngIf="showModal">
-  <div class="p-6 bg-white  rounded-md flex flex-col gap-6 ">
+  <div class="p-5 bg-white  rounded-md flex flex-col gap-5">
     <!-- Modal Title -->
-    <h1 class="font-medium flex justify-between items-center ">
+    <h1 class="font-semibold flex justify-between items-center ">
       Confirm Data Deletion
       <span class="material-symbols-outlined cursor-pointer" (click)="this.showModal = false">
         close
@@ -86,7 +84,7 @@
     </p>
     <!-- Footer Section -->
     <section>
-      <button (click)="clearMyData()" class="px-5 py-3 bg-red-700 text-white  rounded-md hover:bg-red-800">
+      <button (click)="clearMyData()" class="px-10 py-3 bg-red-700 text-white text-sm rounded-md hover:bg-red-800">
         Confirm
       </button>
     </section>
