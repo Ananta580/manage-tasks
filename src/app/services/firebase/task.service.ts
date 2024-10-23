@@ -15,6 +15,13 @@ import {
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Task } from '../../models/tasks';
+import {
+  EmailAuthProvider,
+  GoogleAuthProvider,
+  reauthenticateWithCredential,
+  reauthenticateWithPopup,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -155,7 +162,6 @@ export class TaskService {
       });
     });
   }
-
   deleteTask(id: string) {
     return new Promise<void>((resolve, reject) => {
       this.afAuth.onAuthStateChanged((user) => {
@@ -169,6 +175,33 @@ export class TaskService {
             .catch((error) => reject(error));
         } else {
           reject(new Error('User not authenticated'));
+        }
+      });
+    });
+  }
+
+  deleteAllTasks() {
+    return new Promise<void>((resolve, reject) => {
+      this.afAuth.onAuthStateChanged(async (user) => {
+        if (user && user.uid) {
+          try {
+            const tasksCollection = collection(
+              this.firestore,
+              `users/${user.uid}/${this.collectionName}`
+            );
+            const tasksSnapshot = await getDocs(tasksCollection);
+
+            const batch = writeBatch(this.firestore);
+            tasksSnapshot.forEach((doc) => {
+              batch.delete(doc.ref);
+            });
+
+            await batch.commit();
+            resolve();
+          } catch (error) {
+            console.error('Error deleting tasks:', error);
+            reject(error);
+          }
         }
       });
     });

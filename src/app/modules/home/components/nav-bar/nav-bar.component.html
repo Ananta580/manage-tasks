@@ -52,14 +52,26 @@
       [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
       [cdkConnectedOverlayOpen]="showSettingPopup" (backdropClick)="showSettingPopup = false">
       <ul class="bg-white m-2 shadow-md rounded-md min-w-[190px] overflow-hidden">
-        <li class="p-4 text-red-800 flex gap-3 cursor-pointer hover:bg-gray-50 " (click)="showClearDataPopup()">
-          <mat-icon class="text-lg">clear</mat-icon>Clear my data
+        <li class="p-4 py-2 text-red-800 text-sm flex gap-2 items-center cursor-pointer hover:bg-gray-50 "
+          (click)="showClearTaskPopup()">
+          <mat-icon class="text-base">clear</mat-icon>
+          Clear Tasks
         </li>
-        <li class="p-4 border-t flex gap-3 cursor-pointer hover:bg-gray-50 " (click)="updateProfile()">
-          <mat-icon class="text-lg">account_circle</mat-icon>Update Profile
+
+        <li class="p-4 py-2 border-t border-gray-100 flex gap-2 text-sm cursor-pointer items-center hover:bg-gray-50"
+          (click)="updateProfile()">
+          <mat-icon class="text-base">account_circle</mat-icon>Update Profile
         </li>
-        <li class="p-4 border-t text-emerald-800 flex gap-3 cursor-pointer hover:bg-gray-50 ">
-          <mat-icon class="text-lg">public</mat-icon>Switch online
+        <li *ngIf="isLocal"
+          class="p-4 py-2 text-sm border-t border-gray-100  text-emerald-800 flex gap-2 items-center cursor-pointer hover:bg-gray-50 ">
+          <mat-icon class="text-base">public</mat-icon>Switch online
+        </li>
+
+        <li
+          class="p-4 py-2 text-red-800 border-t border-gray-100  text-sm flex items-center gap-2 cursor-pointer hover:bg-gray-50 "
+          (click)="showDeleteAccountPopup()">
+          <mat-icon class="text-base">delete</mat-icon>
+          Delete Account
         </li>
       </ul>
     </ng-template>
@@ -71,20 +83,24 @@
   <div class="p-5 bg-white  rounded-md flex flex-col gap-5">
     <!-- Modal Title -->
     <h1 class="font-semibold flex justify-between items-center ">
-      Confirm Data Deletion
+      {{isAccountDelete?'Confirm Account Deletion':'Confirm Task Deletion' }}
       <span class="material-symbols-outlined cursor-pointer" (click)="this.showModal = false">
         close
       </span>
     </h1>
     <!-- Body Section -->
     <p>
-      Are you sure you want to clear the data? This action is irreversible and
-      will permanently delete all selected data from application.
+      {{isAccountDelete? deleteAccountMessage: deleteTasksMessage}}
     </p>
+    <input *ngIf="isAccountDelete && !isLocal" type="password"
+      class="p-5 py-3 border-gray-200 bg-white focus:ring-1 outline-none ring-black" placeholder="Enter your passoword"
+      [(ngModel)]="password" />
     <!-- Footer Section -->
     <section>
-      <button (click)="clearMyData()" class="px-10 py-3 bg-red-700 text-white text-sm rounded-md hover:bg-red-800">
-        Confirm
+      <button (click)="clearMyData()" [disabled]="(!isLocal && isAccountDelete && !password) ? true:false"
+        [ngClass]="{'cursor-not-allowed hover:bg-red-300 bg-red-300':(!isLocal && isAccountDelete && !password)}"
+        class="px-6 py-3 bg-red-700 transition-all duration-300 text-white text-sm rounded-md hover:bg-red-800">
+        CONFIRM
       </button>
     </section>
   </div>

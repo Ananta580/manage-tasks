@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { AuthService } from 'src/app/services/firebase/auth.service';
 import { LocalstorageService } from 'src/app/services/local.storage.service';
 import { TaskStorageService } from 'src/app/services/task.storage.service';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -13,7 +15,17 @@ export class NavBarComponent implements OnInit, OnDestroy {
   user$ = this.localStorage.user$;
   showSettingPopup = false;
   showModal = false;
+  isAccountDelete = false;
+
   greeting?: string;
+  isLocal = this.localStorage.isLocal;
+
+  password?: string;
+
+  deleteAccountMessage =
+    'Are you sure you want to delete your account? This action is irreversible and will permanently delete all your data from the application.';
+  deleteTasksMessage =
+    'Are you sure you want to delete all your tasks? This action is irreversible and will permanently delete all your tasks from the application.';
 
   theme = this.localStorage.theme;
 
@@ -22,8 +34,10 @@ export class NavBarComponent implements OnInit, OnDestroy {
   private subscription?: Subscription;
   constructor(
     private router: Router,
+    private toastService: ToastService,
     private taskService: TaskStorageService,
-    private localStorage: LocalstorageService
+    private localStorage: LocalstorageService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -64,14 +78,64 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.showSettingPopup = true;
   }
 
-  showClearDataPopup() {
+  showDeleteAccountPopup() {
+    this.showClearTaskPopup();
+    this.isAccountDelete = true;
+  }
+
+  showClearTaskPopup() {
     this.showSettingPopup = false;
     this.showModal = true;
   }
 
+  switchOnline() {
+    // Redirect to SignUp page with cloud, and after logged in success, check, if there is localstorage data, if any, move it to global,
+    this.router.navigateByUrl('/auth/register');
+  }
+
   clearMyData() {
-    localStorage.clear();
-    this.router.navigateByUrl('/auth/login');
+    if (this.isLocal) {
+      if (this.isAccountDelete) {
+        localStorage.clear();
+        this.toastService.showSuccess('User account deleted successfully.');
+        this.router.navigateByUrl('/auth/login');
+      } else {
+        localStorage.removeItem('tasks');
+        this.toastService.showSuccess('All tasks deleted successfully.');
+      }
+      this.showModal = false;
+      this.isAccountDelete = false;
+    } else {
+      if (this.isAccountDelete) {
+        // Delete account and table of user from DB
+        this.authService
+          .deleteAccount(this.password ?? '')
+          .then(() => {
+            localStorage.clear();
+            this.toastService.showSuccess('User account deleted successfully.');
+            this.router.navigateByUrl('/auth/login');
+          })
+          .catch((err) => {
+            this.password = '';
+            if (err === 'PASS-WRONG') {
+              this.toastService.showError(
+                'Sorry, your password is wrong! Try again.'
+              );
+              return;
+            }
+            this.toastService.showError(
+              'There was some error while deleting user.'
+            );
+          });
+      } else {
+        this.taskService.deleteAllTasks().then(() => {
+          localStorage.removeItem('tasks');
+          this.toastService.showSuccess('All tasks deleted successfully.');
+          this.showModal = false;
+          this.isAccountDelete = false;
+        });
+      }
+    }
   }
 
   updateProfile() {

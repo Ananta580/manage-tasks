@@ -124,7 +124,6 @@ export class DashboardComponent implements OnInit {
       default:
         this.tasks$ = this.taskService.tasks$.pipe(
           map((data) => {
-            console.log(data);
             var sortData = [];
             sortData = [...data];
             sortData.sort((a, b) => {

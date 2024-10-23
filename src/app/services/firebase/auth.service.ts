@@ -1,16 +1,22 @@
 import { inject, Injectable } from '@angular/core';
-import { doc, Firestore, getDoc, setDoc } from '@angular/fire/firestore';
+import {
+  deleteDoc,
+  doc,
+  Firestore,
+  getDoc,
+  setDoc,
+} from '@angular/fire/firestore';
 import {
   Auth,
   createUserWithEmailAndPassword,
-  GoogleAuthProvider,
+  EmailAuthProvider,
   sendEmailVerification,
   signInWithEmailAndPassword,
-  signInWithPopup,
   UserCredential,
+  reauthenticateWithCredential,
 } from '@angular/fire/auth';
 import { User, UserLogin, UserRegister } from '../../models/user';
-import { BehaviorSubject, delay } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { LocalstorageService } from '../local.storage.service';
 import { ToastService } from '../toast.service';
 
@@ -127,5 +133,71 @@ export class AuthService {
     const userDocRef = doc(this._firestore, `users/${user.uid}`);
     await setDoc(userDocRef, user);
     return user;
+  }
+
+  deleteAccount(password: string) {
+    return new Promise<void>((resolve, reject) => {
+      this._auth.onAuthStateChanged(async (user) => {
+        if (user && user.uid) {
+          try {
+            // Delete the user document
+            const userDoc = doc(this._firestore, `users/${user.uid}`);
+            const userDB = await getDoc(userDoc);
+            if (password != userDB.data()?.['password']) {
+              reject('PASS-WRONG');
+            }
+            // await deleteDoc(userDoc);
+
+            // try {
+            //   await user.delete();
+            // } catch (error: any) {
+            //   if (error.code === 'auth/requires-recent-login') {
+            //     // Re-authenticate the user
+            //     const credential = EmailAuthProvider.credential(
+            //       user.email!,
+            //       password
+            //     );
+            //     await reauthenticateWithCredential(user, credential);
+            //     await user.delete();
+            //   } else {
+            //     throw error;
+            //   }
+            // }
+
+            // this._auth.signOut();
+            resolve();
+          } catch (error) {
+            console.error('Error deleting user:', error);
+            reject(error);
+          }
+        }
+      });
+    });
+  }
+
+  updateUserInfo(name: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this._auth.onAuthStateChanged(async (currentUser) => {
+        if (currentUser && currentUser.uid) {
+          try {
+            const userDocRef = doc(this._firestore, `users/${currentUser.uid}`);
+            const userDoc = await getDoc(userDocRef);
+            if (userDoc.exists()) {
+              const userData = userDoc.data() as User;
+              const updatedUser = { ...userData, name: name };
+              await setDoc(userDocRef, updatedUser, { merge: true });
+              resolve();
+            } else {
+              reject(new Error('User document does not exist.'));
+            }
+          } catch (error) {
+            console.error('Error updating user info:', error);
+            reject(error);
+          }
+        } else {
+          reject(new Error('No authenticated user found.'));
+        }
+      });
+    });
   }
 }

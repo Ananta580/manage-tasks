@@ -41,7 +41,8 @@
         <div class="flex gap-5 max-sm:flex-col">
             <input class="p-5 py-3 w-1/2  max-sm:w-full border-gray-200 bg-white focus:ring-1 ring-black"
                 placeholder="Your best email" formControlName="email" />
-            <input class="p-5 py-3 w-1/2 max-sm:w-full  border-gray-200 bg-white focus:ring-1 ring-black"
+            <input type="password"
+                class="p-5 py-3 w-1/2 max-sm:w-full  border-gray-200 bg-white focus:ring-1 ring-black"
                 placeholder="Choose a secure password" formControlName="password" />
         </div>
         <button (click)="doLogin()"

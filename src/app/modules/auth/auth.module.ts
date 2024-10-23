@@ -10,6 +10,7 @@ import { VerifyEmailComponent } from './pages/verify-email/verify-email.componen
 import { LoginGuard } from 'src/app/guards/login.guard';
 import { RegisterGuard } from 'src/app/guards/register.guard';
 import { MatIconModule } from '@angular/material/icon';
+import { VerifyEmailGuard } from 'src/app/guards/verify-email.guard';
 
 @NgModule({
   declarations: [
@@ -35,22 +36,22 @@ import { MatIconModule } from '@angular/material/icon';
           {
             path: 'login',
             component: LoginComponent,
-            // canActivate: [LoginGuard],
+            canActivate: [LoginGuard],
           },
           {
             path: 'register',
             component: RegisterComponent,
-            // canActivate: [RegisterGuard],
+            canActivate: [RegisterGuard],
           },
           {
             path: 'verify-email',
             component: VerifyEmailComponent,
-            // canActivate: [VerifyEmailGuard],
+            canActivate: [VerifyEmailGuard],
           },
           {
             path: 'complete',
             component: StartingComponent,
-            // canActivate: [VerifyEmailGuard],
+            canActivate: [VerifyEmailGuard],
           },
         ],
       },

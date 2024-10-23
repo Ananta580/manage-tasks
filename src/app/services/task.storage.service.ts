@@ -82,6 +82,10 @@ export class TaskStorageService {
     }
   }
 
+  deleteAllTasks() {
+    return this.taskService.deleteAllTasks();
+  }
+
   reorderTasks(prev: Task, current: Task): void {
     const currentTasks = this.tasksSubject.value;
     const prevIndex = currentTasks.findIndex((task) => task.id === prev.id);

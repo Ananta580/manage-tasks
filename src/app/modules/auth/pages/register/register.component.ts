@@ -70,6 +70,7 @@ export class RegisterComponent {
         this.localStorage.todo_local_username = this.name;
         this.router.navigateByUrl('/');
       } else {
+        this.localStorage.isLocal = false;
         this.authService.signup(this.registerForm.value).then(() => {
           this.authService.verifyEmail().then(() => {
             this.router.navigateByUrl('/auth/verify-email');

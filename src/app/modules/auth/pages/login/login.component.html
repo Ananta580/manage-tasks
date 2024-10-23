@@ -18,7 +18,7 @@
   <div [formGroup]="loginForm" class="flex flex-col gap-5">
     <input class="p-5 py-3 border-gray-200 bg-white focus:ring-1 outline-none ring-black" placeholder="Your best email"
       formControlName="email" />
-    <input class="p-5 py-3 border-gray-200 bg-white focus:ring-1 outline-none ring-black"
+    <input type="password" class="p-5 py-3 border-gray-200 bg-white focus:ring-1 outline-none ring-black"
       placeholder="Your secure password" formControlName="password" />
     <button (click)="doLogin()"
       class="flex justify-center items-center rounded-md bg-black hover:bg-gray-800 transition-all duration-500 text-white p-5 py-3">
