@@ -1,9 +1,8 @@
 <ng-container *ngIf="user$ | async as user">
-  <div
-    class="fixed top-0 w-full z-10 bg-gradient-to-r  from-emerald-800 via-emerald-600 to-emerald-800 text-gray-50 shadow-sm">
+  <div class="fixed top-0 w-full z-10 bg-gradient-to-r from-black via-zinc-900 to-black text-gray-50 shadow-sm">
     <div class="flex justify-between items-center px-8 py-3">
       <div class="flex items-center gap-5">
-        <img class="h-6" src="../../../../../assets/logo.svg" />
+        <img class="h-6" src="../../../../../assets/images/logo.svg" />
         <p class="text-lg">
           {{ currentDate$ | async | date : "hh:mm a" }}
         </p>
@@ -19,18 +18,18 @@
       <!-- User Actions -->
       <div class="flex items-center gap-2">
         <input id="search" placeholder="Search" (input)="searchTask($event)"
-          class="p-2 px-5 mr-5 bg-white !text-gray-500 rounded-full focus:outline-none focus:ring-1 focus:ring-green-500" />
+          class="p-2 px-5 mr-5 bg-white text-gray-500 border border-gray-300 rounded-full outline-none focus:ring-1 focus:ring-black" />
         <!-- Add Task Button -->
         <button routerLink="/app/task"
-          class="h-10 w-10 flex justify-center items-center bg-white  hover:bg-[#06010144]  hover:text-white rounded-full text-green-600">
+          class="h-10 w-10 flex justify-center items-center bg-white bg-opacity-25 hover:bg-opacity-80 hover:text-black rounded-full text-white transition-all">
           <mat-icon>add</mat-icon>
         </button>
 
-        <!-- Notifications Button -->
-        <button (click)="changeTheme()"
+        <!-- Themes Button -->
+        <!-- <button (click)="changeTheme()"
           class="h-10 w-10 flex justify-center items-center bg-transparent hover:bg-[#ffffff44] rounded-full ">
           <mat-icon>{{ theme == "dark" ? "wb_sunny" : "wb_sunny" }}</mat-icon>
-        </button>
+        </button> -->
 
         <!-- Settings Button -->
         <button cdkOverlayOrigin #trigger="cdkOverlayOrigin" (click)="showSettingPopup = !showSettingPopup"
@@ -39,7 +38,7 @@
         </button>
 
         <!-- User Avatar Button -->
-        <button
+        <button routerLink="/app/setting"
           class="h-10 w-10 flex justify-center items-center bg-transparent border-2 bg-black bg-opacity-25 rounded-full text-white">
           <span>
             {{ getUserInitials(user.name) }}
@@ -52,15 +51,15 @@
     <ng-template cdkConnectedOverlay cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
       [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
       [cdkConnectedOverlayOpen]="showSettingPopup" (backdropClick)="showSettingPopup = false">
-      <ul class="bg-gray-50  m-2 shadow-md rounded-sm min-w-[190px]">
-        <li class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200  " (click)="showClearDataPopup()">
-          <mat-icon>clear</mat-icon>Clear my data
+      <ul class="bg-white m-2 shadow-md rounded-md min-w-[190px] overflow-hidden">
+        <li class="p-4 text-red-800 flex gap-3 cursor-pointer hover:bg-gray-50 " (click)="showClearDataPopup()">
+          <mat-icon class="text-lg">clear</mat-icon>Clear my data
         </li>
-        <li class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200 " (click)="updateProfile()">
-          <mat-icon>account_circle</mat-icon>Update Profile
+        <li class="p-4 border-t flex gap-3 cursor-pointer hover:bg-gray-50 " (click)="updateProfile()">
+          <mat-icon class="text-lg">account_circle</mat-icon>Update Profile
         </li>
-        <li class="p-4 flex gap-3 cursor-pointer hover:bg-slate-200 ">
-          <mat-icon>public</mat-icon>Switch online
+        <li class="p-4 border-t text-emerald-800 flex gap-3 cursor-pointer hover:bg-gray-50 ">
+          <mat-icon class="text-lg">public</mat-icon>Switch online
         </li>
       </ul>
     </ng-template>

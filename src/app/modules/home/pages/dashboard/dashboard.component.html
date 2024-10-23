@@ -1,12 +1,12 @@
-<div class="flex gap-3 overflow-y-auto bg-white min-h-[calc(100vh-4rem)] ">
-  <section
-    class="flex fixed flex-col w-auto min-w-[300px] bg-gradient-to-t bg-slate-100  pt-6 h-[calc(100%-100px)]  rounded-2xl m-5">
+<div class="flex gap-3 overflow-y-auto bg-black bg-opacity-5 min-h-[calc(100vh-4rem)]">
+  <!-- Side bar -->
+  <section class="flex fixed flex-col w-auto min-w-[250px] bg-gradient-to-t bg-white pt-6 h-[calc(100%)] rounded-md">
     <div class="flex flex-col">
       <div (click)="changeTaskType(tab.key)" *ngFor="let tab of tabs" [ngClass]="
           tab.key === selectedTab
-            ? ' rounded-full !border-emerald-500 bg-emerald-50'
-            : 'text-slate-400'
-        " class="p-3 mx-6 border-2 border-transparent rounded-md cursor-pointer font-normal flex gap-2">
+            ? 'rounded-full !border-black bg-emerald-800 text-white'
+            : 'text-slate-400 hover:text-black transition-all delay-150'
+        " class="p-3 mx-5 border-1 border-transparent rounded-md cursor-pointer font-normal flex gap-2">
         <span class="material-symbols-outlined" [ngClass]="tab.key === selectedTab ? 'fill' : ''">
           {{ tab.icon }} </span>{{ tab.title }}
       </div>
@@ -15,8 +15,8 @@
       <span class="mb-3 px-5 text-gray-800">SORT BY</span>
       <div (click)="changeSortType(tab.key)" *ngFor="let tab of sortTabs" [ngClass]="
           tab.key === selectedSortTab
-            ? 'bg-gradient-to-b from-emerald-600 to-emerald-700 text-white '
-            : 'text-gray-400'
+            ? 'bg-emerald-800 text-white'
+            : 'text-gray-400  hover:text-black transition-all delay-150'
         " class="p-3 rounded-md cursor-pointer font-normal flex gap-2">
         <span class="material-symbols-outlined" [ngClass]="tab.key === selectedSortTab ? 'fill' : ''">
           {{ tab.icon }} </span>{{ tab.title }}
@@ -25,7 +25,8 @@
 
   </section>
 
-  <section class="ml-[320px] p-6 pt-3 flex w-full flex-col">
+  <!-- Main container -->
+  <section class="ml-[250px] p-6 pt-3 flex w-full flex-col">
     <div cdkDropList (cdkDropListDropped)="drop($event)" *ngIf="
         ((tasks$ | async) ??[]).length>0
         else emptyTemplate
@@ -38,9 +39,9 @@
         <div class="flex gap-4 items-start">
           <!-- Status Indicator -->
           <span (click)="changeStatus(task)" [ngClass]="{
-               'text-emerald-600': task.done,
-               'text-gray-300 hover:text-emerald-500': !task.done
-           }" class="material-symbols-outlined text-3xl cursor-pointer transition duration-200">
+           'text-emerald-600': task.done,
+           'text-gray-300 hover:text-emerald-500': !task.done
+           }" class="material-symbols-outlined text-2xl cursor-pointer transition duration-200">
             {{ task.done ? "check_circle" : "radio_button_unchecked" }}
           </span>
 
@@ -49,7 +50,7 @@
             <span class="flex gap-2 items-center">
               <span *ngIf="task.group" style="letter-spacing: 0.6px" [style.background]="task.group?.color"
                 class="text-xs text-white px-2 py-1 rounded-full">{{ task.group?.name }}</span>
-              <span class="font-semibold  text-gray-800">{{ task.title }}</span>
+              <span class="font-semibold text-lg text-gray-800">{{ task.title }}</span>
             </span>
             <span class="text-gray-600">{{ task.description }}</span>
           </div>
@@ -58,49 +59,52 @@
         <!-- Action Buttons -->
         <div class="relative flex items-center gap-2">
           <!-- Options Button -->
-          <button (click)="toggleMenu(task)"
+          <button cdkOverlayOrigin #trigger="cdkOverlayOrigin" (click)="toggleMenu(task)"
             class="flex items-center justify-center p-1 rounded-md text-gray-400 hover:bg-gray-200 transition duration-300 ease-in-out focus:outline-none">
             <span class="material-symbols-outlined text-xl">widgets</span>
           </button>
 
           <!-- Dropdown Menu -->
-          <div *ngIf="activeMenu === task"
-            class="absolute rounded-md right-0 mt-2 w-48 bg-white border drop-shadow-xl z-10 overflow-hidden">
+          <ng-template cdkConnectedOverlay cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+            [cdkConnectedOverlayHasBackdrop]="true" [cdkConnectedOverlayOrigin]="trigger"
+            [cdkConnectedOverlayOpen]="activeMenu === task" (backdropClick)="closeMenu()">
+            <div class="rounded-md right-0 mt-2 w-48 bg-white border drop-shadow-xl z-10 overflow-hidden">
 
-            <!-- If confirming delete, show confirmation text and buttons -->
-            <div *ngIf="confirmingDelete === task; else taskOptions">
-              <div class="p-4 text-sm text-gray-700">
-                Are you sure you want to delete this task?
+              <!-- If confirming delete, show confirmation text and buttons -->
+              <div *ngIf="confirmingDelete === task; else taskOptions">
+                <div class="p-4 text-sm text-gray-700">
+                  Are you sure you want to delete this task?
+                </div>
+                <div class="flex justify-between px-4 pb-2">
+                  <button (click)="deleteTask(task)"
+                    class="px-4 py-1 text-white bg-red-500 text-sm rounded-md hover:bg-red-600 transition duration-300 ease-in-out">Yes</button>
+                  <button (click)="closeMenu()"
+                    class="px-4 py-1 text-gray-600 bg-gray-200 text-sm rounded-md hover:bg-gray-300 transition duration-300 ease-in-out">No</button>
+                </div>
               </div>
-              <div class="flex justify-between px-4 pb-2">
-                <button (click)="deleteTask(task)"
-                  class="px-4 py-1 text-white bg-red-500 rounded-md hover:bg-red-600 transition duration-300 ease-in-out">Yes</button>
+
+              <!-- Options for Edit and Delete -->
+              <ng-template #taskOptions>
+                <button (click)="editTask(task)"
+                  class="flex items-center w-full text-left px-4 py-2 text-sm text-emerald-800 hover:bg-emerald-50 transition duration-300 ease-in-out">
+                  <span class="material-symbols-outlined mr-2 text-xl">edit</span>Edit
+                </button>
+                <button (click)="confirmDelete(task)"
+                  class="flex items-center w-full text-left border-t border-gray-100 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition duration-300 ease-in-out">
+                  <span class="material-symbols-outlined mr-2 text-xl">delete</span>Delete
+                </button>
                 <button (click)="closeMenu()"
-                  class="px-4 py-1 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300 transition duration-300 ease-in-out">No</button>
-              </div>
+                  class="flex items-center w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-50  transition duration-300 ease-in-out">
+                  <span class="material-symbols-outlined mr-2 text-xl">close</span>Close
+                </button>
+              </ng-template>
             </div>
-
-            <!-- Options for Edit and Delete -->
-            <ng-template #taskOptions>
-              <button (click)="editTask(task)"
-                class="flex items-center w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-emerald-50  transition duration-300 ease-in-out">
-                <span class="material-symbols-outlined mr-2 text-xl">edit</span>Edit
-              </button>
-              <button (click)="confirmDelete(task)"
-                class="flex items-center w-full text-left border-t px-4 py-2 text-sm text-red-600 hover:bg-red-50  transition duration-300 ease-in-out">
-                <span class="material-symbols-outlined mr-2 text-xl">delete</span>Delete
-              </button>
-              <button (click)="closeMenu()"
-                class="flex items-center w-full text-left px-4 py-2 text-sm text-gray-500 hover:bg-gray-50  transition duration-300 ease-in-out">
-                <span class="material-symbols-outlined mr-2 text-xl">cancel</span>Close
-              </button>
-            </ng-template>
-          </div>
+          </ng-template>
         </div>
       </div>
 
       <div routerLink="/app/task"
-        class="p-4 rounded-lg border mt-3 gap-3 justify-center font-medium text-gray-500 border-gray-100 flex w-full hover:text-black transition-all duration-200 items-center bg-gray-50 hover:cursor-pointer hover:bg-gray-100">
+        class="p-4 rounded-lg border mt-3 gap-3 justify-center transition-all duration-300 font-medium text-gray-500 border-gray-100 flex w-full hover:text-black items-center bg-gray-50 cursor-pointer hover:bg-white">
         <span class="material-symbols-outlined">
           loupe
         </span>Add Task to Your List
@@ -108,18 +112,18 @@
     </div>
     <ng-template #emptyTemplate>
       <div class="flex flex-col justify-center items-center gap-6 h-80 m-auto pt-6">
-        <span class="material-symbols-outlined text-9xl text-gray-400">
+        <span class="material-symbols-outlined text-8xl text-gray-400">
           empty_dashboard
         </span>
-        <h1 class=" text-gray-800">You’re all caught up!</h1>
-        <p class="text-md w-1/2 text-center text-gray-500">
+        <h1 class="text-lg text-gray-800">You’re all caught up!</h1>
+        <p class="text-md w-1/2 text-center text-gray-400">
           No pending tasks means you have time to pursue your passions!
           Whether it’s picking up a new hobby or indulging in your favorite series,
           today is all yours!
         </p>
 
         <button routerLink="/app/task"
-          class="flex justify-center gap-4 items-center  rounded-md bg-black hover:bg-gray-800 transition-all duration-500 text-white p-5 px-10">
+          class="flex justify-center gap-4 items-center text-lg rounded-md bg-black hover:bg-gray-800 transition-all duration-500 text-white p-3 px-6">
           <span class="material-symbols-outlined">
             loupe
           </span>Add Task to Your List

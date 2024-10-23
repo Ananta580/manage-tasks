@@ -1,28 +1,27 @@
-<aside class="flex min-w-[300px] h-[calc(100%-40px)] flex-col w-64 bg-gradient-to-t bg-slate-50 rounded-2xl m-5 py-5">
-  <h2 class="px-8 text-gray-800">SELECT GROUP</h2>
+<aside class="flex min-w-[250px] h-full flex-col w-64 bg-gradient-to-t bg-white py-5">
+  <h2 class="px-8 text-gray-800 text-sm font-medium">SELECT GROUP</h2>
   <ul class="flex flex-col gap-2 p-5 pt-3">
 
     <li [ngClass]="selectedGroup === null || selectedGroup === undefined ? '!border-emerald-500 bg-emerald-50' : ''"
-      class="p-3 border-2 border-slate-100 shadow-sm hover:bg-emerald-50 rounded-md justify-between cursor-pointer font-normal flex gap-2"
+      class="p-3 border text-sm border-slate-100 hover:bg-emerald-50 rounded-md justify-between items-center cursor-pointer font-normal flex gap-2"
       (click)="selectGroup(undefined)">
       None
       <span *ngIf="selectedGroup === null || selectedGroup === undefined"
-        class="material-symbols-outlined text-emerald-600  pl-2 pr-1">check_circle</span>
+        class="material-symbols-outlined text-emerald-600 text-xl pl-2 pr-1">check_circle</span>
     </li>
     <li (click)="selectGroup(group)"
-      class="p-3 border-2 rounded-md cursor-pointer border-slate-100 shadow-sm hover:bg-emerald-50 flex gap-6 justify-between items-center"
-      [ngClass]="group.id === selectedGroup?.id ? '!border-emerald-500 bg-emerald-50' : ''"
+      class="p-3 border text-sm rounded-md cursor-pointer border-gray-300 hover:bg-emerald-50 flex gap-6 justify-between items-center"
+      [ngClass]="group.id === selectedGroup?.id ? '!border-emerald-600 bg-emerald-50' : ''"
       *ngFor="let group of groups$ | async; let i = index">
       <span>{{ group.name }}</span>
 
       <!-- Actions -->
       <div class="flex gap-3 z-1 h-fit rounded-full text-white" [style.backgroundColor]="group.color">
-        <span class="material-symbols-outlined  pl-2 pr-1" (click)="patchGroup($event,group)">edit</span>
-        <span class="material-symbols-outlined  pr-2 pl-1" (click)="deleteGroup($event,group)">delete</span>
+        <span class="material-symbols-outlined text-xl pl-2 pr-1" (click)="patchGroup($event,group)">edit</span>
+        <span class="material-symbols-outlined text-xl pr-2 pl-1" (click)="deleteGroup($event,group)">delete</span>
       </div>
     </li>
-    <li
-      class="flex gap-3 p-3 mt-5 cursor-pointer bg-gradient-to-r from-emerald-600 bg-emerald-700 text-white hover:bg-emerald-800 rounded-md"
+    <li class="flex gap-3 p-3 mt-5 cursor-pointer bg-emerald-800 text-white hover:bg-emerald-900 rounded-md"
       (click)="showModal = true">
       <span class="material-symbols-outlined">add_task</span> New Project Group
     </li>
@@ -36,7 +35,7 @@
     <div class="flex flex-col p-5 rounded-xl shadow-md gap-6">
       <div
         class="flex relative flex-col gap-3 font-light justify-center items-start p-8 border-2 rounded-md border-green-600 bg-green-50 w-full">
-        <div class="justify-center text-xl w-full flex items-center gap-10">
+        <div class="justify-center text-lg w-full flex items-center gap-10">
           <p class="flex items-center gap-3 cursor-pointer font-medium text-green-600">
             <span class="material-symbols-outlined font-medium">
               add_task
@@ -45,7 +44,7 @@
             {{editId?"Update existing Group" : "Add a New Group" }}
           </p>
         </div>
-        <p class="text-center break-words gap-2">
+        <p class="text-center text-sm break-words gap-2">
           Groups are a way to organize your tasks together. For example, you can create groups for different projects or
           categories to streamline your workflow.
         </p>
@@ -59,9 +58,9 @@
       <section [formGroup]="groupForm" class="flex w-full flex-col gap-6">
         <!-- Group Name Input -->
         <div class="flex w-full gap-4">
-          <input class="h-auto w-20 p-0 rounded-md cursor-pointer transition duration-150" type="color"
+          <input class="h-auto w-12 p-0 rounded-md cursor-pointer transition duration-150" type="color"
             formControlName="color" />
-          <input class="p-5  w-full border-gray-200 font-light focus:ring-2 ring-black"
+          <input class="p-5 py-3  w-full border-gray-200 font-light focus:ring-1 ring-black"
             placeholder="Name your task group" formControlName="name" />
         </div>
 
@@ -70,7 +69,7 @@
 
       <section class="border-t pt-5 -mx-5 px-5">
         <button (click)="editId ? editGroup() : addGroup()"
-          class="flex gap-3 justify-center items-center  rounded-md bg-black hover:bg-slate-800 text-white p-4 w-full">
+          class="flex gap-3 justify-center items-center  rounded-md bg-black hover:bg-slate-800 text-white p-5 py-3 w-full">
 
           <span class="material-symbols-outlined">outbound</span>
           {{editId?"Save Changes to Group" : "Create New Group" }}
