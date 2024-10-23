@@ -1,7 +1,9 @@
-<div class="flex w-full h-screen bg-white justify-start flex-col px-10 py-20 gap-20">
+<div
+    class="flex w-full h-screen max-lg:h-auto bg-white justify-start flex-col px-10 max-sm:px-5 py-20 gap-20 max-sm:gap-10">
     <div
-        class="flex flex-col gap-3 font-light justify-center items-start p-8 border-2 rounded-xl border-green-600 bg-green-50 w-full">
-        <div class="justify-center text-lg mb-5 w-full flex items-center gap-10">
+        class="flex flex-col gap-3 font-light justify-center items-start p-8 max-sm:p-5 border-2 rounded-xl border-green-600 bg-green-50 w-full">
+        <div
+            class="justify-center max-sm:text-sm text-lg mb-5 max-lg:mb-2 w-full flex items-center gap-10 max-lg:gap-5 max-sm:flex-wrap">
             <p *ngFor="let type of storageTypes" class="flex items-center gap-1 cursor-pointer font-medium" [ngClass]="{
              'text-green-600': selectedStorageType == type.value,
              'text-gray-400 cursor-pointer': selectedStorageType != type.value
@@ -10,7 +12,7 @@
                 {{type.label}}
             </p>
         </div>
-        <p *ngFor="let feature of selectedStorageFeatures" class="flex items-start gap-2">
+        <p *ngFor="let feature of selectedStorageFeatures" class="flex items-start max-sm:text-sm gap-2">
             <span class="material-symbols-outlined">check</span>
             {{feature}}
         </p>
@@ -36,10 +38,10 @@
     <div [formGroup]="registerForm" *ngIf="selectedStorageType=='cloud'" class="flex flex-col gap-5">
         <input class="p-5 py-3  border-gray-200 bg-white focus:ring-1 ring-black" placeholder="What should we call you?"
             formControlName="displayName" />
-        <div class="flex gap-5">
-            <input class="p-5 py-3 w-1/2  border-gray-200 bg-white focus:ring-1 ring-black"
+        <div class="flex gap-5 max-sm:flex-col">
+            <input class="p-5 py-3 w-1/2  max-sm:w-full border-gray-200 bg-white focus:ring-1 ring-black"
                 placeholder="Your best email" formControlName="email" />
-            <input class="p-5 py-3 w-1/2  border-gray-200 bg-white focus:ring-1 ring-black"
+            <input class="p-5 py-3 w-1/2 max-sm:w-full  border-gray-200 bg-white focus:ring-1 ring-black"
                 placeholder="Choose a secure password" formControlName="password" />
         </div>
         <button (click)="doLogin()"
