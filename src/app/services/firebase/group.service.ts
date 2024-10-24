@@ -33,7 +33,6 @@ export class GroupService {
           onSnapshot(
             groupsQuery,
             (querySnapshot) => {
-              console.log('Changed');
               const groups: Group[] = querySnapshot.docs.map(
                 (doc) => ({ uid: doc.id, ...doc.data() } as Group)
               );
@@ -89,7 +88,6 @@ export class GroupService {
   }
 
   deleteGroup(id: string) {
-    console.log(id);
     return new Promise<void>((resolve, reject) => {
       this.afAuth.onAuthStateChanged((user) => {
         if (user && user.uid) {

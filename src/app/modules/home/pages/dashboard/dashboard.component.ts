@@ -124,11 +124,8 @@ export class DashboardComponent implements OnInit {
       default:
         this.tasks$ = this.taskService.tasks$.pipe(
           map((data) => {
-            var sortData = [];
-            sortData = [...data];
-            sortData.sort((a, b) => {
-              return a.order < b.order ? -1 : 1;
-            });
+            var sortData = [...data];
+            sortData.sort((a, b) => a.order - b.order);
             return sortData;
           })
         );
@@ -166,19 +163,20 @@ export class DashboardComponent implements OnInit {
     var sth = this.tasks$?.subscribe({
       next: (res) => {
         if (res) {
-          prevItem = { ...res.find((x) => x.order == prev + 1) };
-          currentItem = { ...res.find((x) => x.order == current + 1) };
+          prevItem = res[prev];
+          currentItem = res[current];
+          setTimeout(() => {
+            var prevOrder = JSON.parse(JSON.stringify(prevItem.order));
+            var currentOrder = JSON.parse(JSON.stringify(currentItem.order));
+            prevItem.order = currentOrder;
+            currentItem.order = prevOrder;
+            this.taskService.reorderTasks(prevItem, currentItem);
+            sth?.unsubscribe();
+            this.changeSortType('order');
+          }, 100);
         }
       },
     });
-    setTimeout(() => {
-      var prevOrder = JSON.parse(JSON.stringify(prevItem.order));
-      var currentOrder = JSON.parse(JSON.stringify(currentItem.order));
-      prevItem.order = currentOrder;
-      currentItem.order = prevOrder;
-      this.taskService.reorderTasks(prevItem, currentItem);
-      sth?.unsubscribe();
-    }, 100);
   }
 
   toggleMenu(task: Task): void {

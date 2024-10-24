@@ -24,6 +24,7 @@ export class SettingComponent {
   updateProfile() {
     if (this.isLocal) {
       this.localStorage.todo_local_username = this.name;
+      this.toastService.showSuccess('User information updated successfully');
     } else {
       this.authService.updateUserInfo(this.name).then(() => {
         this.localStorage.todo_cloud_user = {

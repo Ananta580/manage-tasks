@@ -142,15 +142,15 @@ export class TaskService {
           const batch = writeBatch(this.firestore);
           const task1Ref = doc(
             this.firestore,
-            `users/${user.uid}/${this.collectionName}/${task1.id}`
+            `users/${user.uid}/${this.collectionName}/${task1.uid}`
           );
           const task2Ref = doc(
             this.firestore,
-            `users/${user.uid}/${this.collectionName}/${task2.id}`
+            `users/${user.uid}/${this.collectionName}/${task2.uid}`
           );
 
-          batch.update(task1Ref, { order: task2.order });
-          batch.update(task2Ref, { order: task1.order });
+          batch.update(task1Ref, { order: task1.order });
+          batch.update(task2Ref, { order: task2.order });
 
           batch
             .commit()

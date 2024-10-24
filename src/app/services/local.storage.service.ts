@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user';
+import { Task } from '../models/tasks';
+import { Group } from '../models/group';
 
 @Injectable({
   providedIn: 'root',
@@ -47,5 +49,13 @@ export class LocalstorageService {
   }
   get isLocal() {
     return JSON.parse(localStorage.getItem('isLocal') ?? 'true') as boolean;
+  }
+
+  get tasks() {
+    return JSON.parse(localStorage.getItem('tasks') ?? '[]') as Task[];
+  }
+
+  get groups() {
+    return JSON.parse(localStorage.getItem('groups') ?? '[]') as Group[];
   }
 }

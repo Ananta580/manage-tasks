@@ -11,6 +11,7 @@ import { LoginGuard } from 'src/app/guards/login.guard';
 import { RegisterGuard } from 'src/app/guards/register.guard';
 import { MatIconModule } from '@angular/material/icon';
 import { VerifyEmailGuard } from 'src/app/guards/verify-email.guard';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { VerifyEmailGuard } from 'src/app/guards/verify-email.guard';
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
+    SharedModule,
     RouterModule,
     MatIconModule,
   ],

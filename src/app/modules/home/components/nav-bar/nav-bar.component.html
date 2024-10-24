@@ -62,7 +62,7 @@
           (click)="updateProfile()">
           <mat-icon class="text-base">account_circle</mat-icon>Update Profile
         </li>
-        <li *ngIf="isLocal"
+        <li *ngIf="isLocal" (click)="switchOnline()"
           class="p-4 py-2 text-sm border-t border-gray-100  text-emerald-800 flex gap-2 items-center cursor-pointer hover:bg-gray-50 ">
           <mat-icon class="text-base">public</mat-icon>Switch online
         </li>
@@ -72,6 +72,13 @@
           (click)="showDeleteAccountPopup()">
           <mat-icon class="text-base">delete</mat-icon>
           Delete Account
+        </li>
+
+
+        <li *ngIf="!isLocal" class="p-4 py-2 text-white bg-black text-sm flex items-center gap-2 cursor-pointer"
+          (click)="logout()">
+          <mat-icon class="text-base">output</mat-icon>
+          Logout
         </li>
       </ul>
     </ng-template>
@@ -99,7 +106,7 @@
     <section>
       <button (click)="clearMyData()" [disabled]="(!isLocal && isAccountDelete && !password) ? true:false"
         [ngClass]="{'cursor-not-allowed hover:bg-red-300 bg-red-300':(!isLocal && isAccountDelete && !password)}"
-        class="px-6 py-3 bg-red-700 transition-all duration-300 text-white text-sm rounded-md hover:bg-red-800">
+        class="px-6 py-2 bg-red-700 transition-all duration-300 text-white text-sm rounded-md hover:bg-red-800">
         CONFIRM
       </button>
     </section>

@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { GroupService } from 'src/app/services/firebase/group.service';
 import { Group } from '../models/group';
 import { LocalstorageService } from './local.storage.service';
+import { uid } from 'uid';
 
 @Injectable({
   providedIn: 'root',

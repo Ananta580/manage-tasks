@@ -5,6 +5,7 @@ import {
   Firestore,
   getDoc,
   setDoc,
+  writeBatch,
 } from '@angular/fire/firestore';
 import {
   Auth,
@@ -19,6 +20,7 @@ import { User, UserLogin, UserRegister } from '../../models/user';
 import { BehaviorSubject } from 'rxjs';
 import { LocalstorageService } from '../local.storage.service';
 import { ToastService } from '../toast.service';
+import { uid } from 'uid';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -99,7 +101,7 @@ export class AuthService {
       return user;
     } catch (error: any) {
       this._handleLoginError(error);
-      return null;
+      return Promise.reject(null);
     }
   }
 
@@ -126,7 +128,6 @@ export class AuthService {
       errorMessages[error.code] ||
       'An unknown error occurred. Please try again.';
     this.toastService.showError(message);
-    console.error('Login error:', error);
   }
 
   private async _setUserData(user: User): Promise<User> {
@@ -146,25 +147,25 @@ export class AuthService {
             if (password != userDB.data()?.['password']) {
               reject('PASS-WRONG');
             }
-            // await deleteDoc(userDoc);
+            await deleteDoc(userDoc);
 
-            // try {
-            //   await user.delete();
-            // } catch (error: any) {
-            //   if (error.code === 'auth/requires-recent-login') {
-            //     // Re-authenticate the user
-            //     const credential = EmailAuthProvider.credential(
-            //       user.email!,
-            //       password
-            //     );
-            //     await reauthenticateWithCredential(user, credential);
-            //     await user.delete();
-            //   } else {
-            //     throw error;
-            //   }
-            // }
+            try {
+              await user.delete();
+            } catch (error: any) {
+              if (error.code === 'auth/requires-recent-login') {
+                // Re-authenticate the user
+                const credential = EmailAuthProvider.credential(
+                  user.email!,
+                  password
+                );
+                await reauthenticateWithCredential(user, credential);
+                await user.delete();
+              } else {
+                throw error;
+              }
+            }
 
-            // this._auth.signOut();
+            this._auth.signOut();
             resolve();
           } catch (error) {
             console.error('Error deleting user:', error);
@@ -199,5 +200,48 @@ export class AuthService {
         }
       });
     });
+  }
+
+  switchOnline() {
+    const user = this._auth.currentUser;
+    if (user && user.uid) {
+      const tasks = this.localStorageService.tasks;
+      const groups = this.localStorageService.groups;
+      const batch = writeBatch(this._firestore);
+
+      tasks.forEach((task) => {
+        const taskRef = doc(
+          this._firestore,
+          `users/${user.uid}/tasks/${task.uid}`
+        );
+        batch.set(taskRef, task);
+      });
+
+      groups.forEach((group) => {
+        const groupRef = doc(
+          this._firestore,
+          `users/${user.uid}/groups/${group.uid}`
+        );
+        batch.set(groupRef, group);
+      });
+
+      batch
+        .commit()
+        .then(() => {
+          localStorage.removeItem('tasks');
+          localStorage.removeItem('groups');
+          this.toastService.showSuccess('Data successfully synced to cloud.');
+        })
+        .catch((error) => {
+          console.error('Error syncing data to cloud:', error);
+          this.toastService.showError('Failed to sync data to cloud.');
+        });
+    } else {
+      this.toastService.showError('No authenticated user found.');
+    }
+  }
+
+  logout() {
+    this._auth.signOut();
   }
 }

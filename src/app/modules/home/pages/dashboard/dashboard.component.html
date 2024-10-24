@@ -47,9 +47,9 @@
 
           <!-- Title & Description -->
           <div class="flex flex-col">
-            <span class="flex gap-2 items-center">
+            <span class="flex gap-2 items-center">{{task.order}} |
               <span *ngIf="task.group" style="letter-spacing: 0.6px" [style.background]="task.group?.color"
-                class="text-xs text-white px-2 py-1 rounded-full">{{ task.group?.name }}</span>
+                class="text-xs text-white px-2 py-1 rounded-full"> {{ task.group?.name }}</span>
               <span class="font-semibold text-lg text-gray-800">{{ task.title }}</span>
             </span>
             <span class="text-gray-600">{{ task.description }}</span>

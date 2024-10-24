@@ -79,11 +79,13 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   showDeleteAccountPopup() {
-    this.showClearTaskPopup();
     this.isAccountDelete = true;
+    this.showSettingPopup = false;
+    this.showModal = true;
   }
 
   showClearTaskPopup() {
+    this.isAccountDelete = false;
     this.showSettingPopup = false;
     this.showModal = true;
   }
@@ -101,6 +103,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl('/auth/login');
       } else {
         localStorage.removeItem('tasks');
+        this.taskService.nullifyTask();
         this.toastService.showSuccess('All tasks deleted successfully.');
       }
       this.showModal = false;
@@ -156,5 +159,11 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   searchTask(input: any) {
     this.taskService.searchTasks(input.target.value.toLowerCase());
+  }
+
+  logout() {
+    this.authService.logout();
+    localStorage.removeItem('todo_cloud_user');
+    this.router.navigateByUrl('/auth/login');
   }
 }

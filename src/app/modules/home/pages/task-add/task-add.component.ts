@@ -37,7 +37,6 @@ export class TaskAddComponent implements OnInit {
   }
 
   setGroup(group: any) {
-    console.log(group);
     this.group?.setValue(group);
     this.isOpen = false;
   }
@@ -45,7 +44,6 @@ export class TaskAddComponent implements OnInit {
   loadTask() {
     if (this.taskId) {
       this.taskService.getTaskById(this.taskId).then((data) => {
-        console.log(data);
         if (data) {
           this.editTaskPlaceholder = data;
           this.taskForm.patchValue(data);
@@ -74,7 +72,6 @@ export class TaskAddComponent implements OnInit {
       date: new Date(),
       order: ((await this.taskService.getMaxOrder()) ?? 0) + 1,
     };
-    console.log(payload);
     this.taskService.addTask(payload);
     this.router.navigateByUrl('/');
   }

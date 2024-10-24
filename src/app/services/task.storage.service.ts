@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { TaskService } from './firebase/task.service';
 import { Task } from '../models/tasks';
 import { LocalstorageService } from './local.storage.service';
+import { uid } from 'uid';
 
 @Injectable({
   providedIn: 'root',
@@ -74,7 +75,7 @@ export class TaskStorageService {
   deleteTask(task: Task): void {
     if (this.localStore.isLocal) {
       const currentTasks = this.tasksSubject.value;
-      const newTasks = currentTasks.filter((task) => task.id !== task.id);
+      const newTasks = currentTasks.filter((x) => x.id != task.id);
       localStorage.setItem('tasks', JSON.stringify(newTasks));
       this.tasksSubject.next(newTasks);
     } else {
@@ -87,22 +88,24 @@ export class TaskStorageService {
   }
 
   reorderTasks(prev: Task, current: Task): void {
-    const currentTasks = this.tasksSubject.value;
-    const prevIndex = currentTasks.findIndex((task) => task.id === prev.id);
-    const currentIndex = currentTasks.findIndex(
-      (task) => task.id === current.id
-    );
-
-    // Swap tasks
-    const newTasks = [...currentTasks];
-    [newTasks[prevIndex], newTasks[currentIndex]] = [
-      newTasks[currentIndex],
-      newTasks[prevIndex],
-    ];
-
     if (this.localStore.isLocal) {
+      const currentTasks = this.tasksSubject.value;
+      const prevIndex = currentTasks.findIndex((task) => task.id === prev.id);
+      const currentIndex = currentTasks.findIndex(
+        (task) => task.id === current.id
+      );
+
+      if (prevIndex === -1 || currentIndex === -1) {
+        console.error('One or both tasks not found in the current task list.');
+        return;
+      }
+
+      // Swap tasks
+      const newTasks = [...currentTasks];
+      newTasks[prevIndex] = current;
+      newTasks[currentIndex] = prev;
+
       localStorage.setItem('tasks', JSON.stringify(newTasks));
-      this.tasksSubject.next(newTasks);
     } else {
       this.taskService.reorderTasks(prev, current);
     }
@@ -115,5 +118,9 @@ export class TaskStorageService {
         task.description?.toLowerCase().includes(searchString.toLowerCase())
     );
     return filteredTasks;
+  }
+
+  nullifyTask() {
+    this.tasksSubject.next([]);
   }
 }
