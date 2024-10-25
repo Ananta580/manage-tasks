@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { map, Observable } from 'rxjs';
+import { map, Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Task } from 'src/app/models/tasks';
 import { LocalstorageService } from 'src/app/services/local.storage.service';
 import { TaskStorageService } from 'src/app/services/task.storage.service';
@@ -10,51 +11,26 @@ import { TaskStorageService } from 'src/app/services/task.storage.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   tabs = [
-    {
-      title: 'All',
-      key: 'all',
-      icon: 'date_range',
-    },
-    {
-      title: 'To do',
-      key: 'todo',
-      icon: 'calendar_today',
-    },
-    {
-      title: 'Done',
-      key: 'done',
-      icon: 'event_available',
-    },
+    { title: 'All', key: 'all', icon: 'date_range' },
+    { title: 'To do', key: 'todo', icon: 'calendar_today' },
+    { title: 'Done', key: 'done', icon: 'event_available' },
   ];
 
   sortTabs = [
-    {
-      title: 'Order',
-      key: 'order',
-      icon: 'low_priority',
-    },
-    {
-      title: 'Date',
-      key: 'date',
-      icon: 'calendar_month',
-    },
-    {
-      title: 'Groups',
-      key: 'group',
-      icon: 'workspaces',
-    },
+    { title: 'Order', key: 'order', icon: 'low_priority' },
+    { title: 'Date', key: 'date', icon: 'calendar_month' },
+    { title: 'Groups', key: 'group', icon: 'workspaces' },
   ];
 
   selectedTab = 'all';
-
   selectedSortTab = 'order';
-
   tasks$!: Observable<Task[]>;
-
-  activeMenu: Task | null = null; // To track the active menu
-  confirmingDelete: Task | null = null; // To track the confirmation state
+  activeMenu: Task | null = null;
+  confirmingDelete: Task | null = null;
 
   constructor(
     private taskService: TaskStorageService,
@@ -63,88 +39,58 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Sort by order at first
-    this.changeSortType('order');
+    this.updateTasks();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  updateTasks() {
+    this.tasks$ = this.taskService.tasks$.pipe(
+      takeUntil(this.destroy$),
+      map((data) => {
+        let filteredData = [...data];
+        if (this.selectedTab === 'todo') {
+          filteredData = filteredData.filter((task) => !task.done);
+        } else if (this.selectedTab === 'done') {
+          filteredData = filteredData.filter((task) => task.done);
+        }
+
+        switch (this.selectedSortTab) {
+          case 'date':
+            return filteredData.sort(
+              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+            );
+          case 'group':
+            return filteredData.sort((a, b) =>
+              (a.group?.name || '').localeCompare(b.group?.name || '')
+            );
+          default: // 'order'
+            return filteredData.sort((a, b) => a.order - b.order);
+        }
+      })
+    );
   }
 
   changeTaskType(tab: string) {
     this.selectedTab = tab;
-    switch (tab) {
-      case 'todo':
-        this.tasks$ = this.taskService.tasks$.pipe(
-          map((data) => {
-            var filteredData = [];
-            filteredData = [...data];
-            filteredData = filteredData.filter((x) => x.done === false);
-            return filteredData;
-          })
-        );
-        break;
-      case 'done':
-        this.tasks$ = this.taskService.tasks$.pipe(
-          map((data) => {
-            var filteredData = [];
-            filteredData = [...data];
-            filteredData = filteredData.filter((x) => x.done === true);
-            return filteredData;
-          })
-        );
-        break;
-      default:
-        this.changeSortType('order');
-        break;
-    }
+    this.updateTasks();
   }
 
   changeSortType(tab: string) {
     this.selectedSortTab = tab;
-    switch (tab) {
-      case 'date':
-        this.tasks$ = this.taskService.tasks$.pipe(
-          map((data) => {
-            var sortData = [];
-            sortData = [...data];
-            sortData.sort(
-              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-            );
-            return sortData;
-          })
-        );
-        break;
-      case 'group':
-        this.tasks$ = this.taskService.tasks$.pipe(
-          map((data) => {
-            var sortData = [];
-            sortData = [...data];
-            sortData.sort((x) => x.group?.name);
-            return sortData;
-          })
-        );
-        break;
-      default:
-        this.tasks$ = this.taskService.tasks$.pipe(
-          map((data) => {
-            var sortData = [...data];
-            sortData.sort((a, b) => a.order - b.order);
-            return sortData;
-          })
-        );
-        break;
-    }
+    this.updateTasks();
   }
 
   changeStatus(task: Task) {
-    const payload = {
-      ...task,
-      done: !task.done,
-      animate: task.done ? false : true,
-    };
-    this.taskService.editTask(payload);
+    const updatedTask = { ...task, done: !task.done, animate: !task.done };
+    this.taskService.editTask(updatedTask);
 
-    if (payload.animate) {
+    if (updatedTask.animate) {
       setTimeout(() => {
-        const updatedPayload = { ...payload, animate: false };
-        this.taskService.editTask(updatedPayload);
+        this.taskService.editTask({ ...updatedTask, animate: false });
       }, 1000);
     }
   }
@@ -156,26 +102,19 @@ export class DashboardComponent implements OnInit {
   }
 
   drop(event: any) {
-    var prev = event.previousIndex;
-    var current = event.currentIndex;
-    var prevItem: any = null;
-    var currentItem: any = null;
-    var sth = this.tasks$?.subscribe({
-      next: (res) => {
-        if (res) {
-          prevItem = res[prev];
-          currentItem = res[current];
-          setTimeout(() => {
-            var prevOrder = JSON.parse(JSON.stringify(prevItem.order));
-            var currentOrder = JSON.parse(JSON.stringify(currentItem.order));
-            prevItem.order = currentOrder;
-            currentItem.order = prevOrder;
-            this.taskService.reorderTasks(prevItem, currentItem);
-            sth?.unsubscribe();
-            this.changeSortType('order');
-          }, 100);
-        }
-      },
+    const prevIndex = event.previousIndex;
+    const currentIndex = event.currentIndex;
+
+    const sth = this.tasks$.subscribe((res) => {
+      const prevItem = res[prevIndex];
+      const currentItem = res[currentIndex];
+
+      const tempOrder = prevItem.order;
+      prevItem.order = currentItem.order;
+      currentItem.order = tempOrder;
+
+      this.taskService.reorderTasks(prevItem, currentItem);
+      sth.unsubscribe();
     });
   }
 

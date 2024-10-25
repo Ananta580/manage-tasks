@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Auth } from '@angular/fire/auth';
+import { Auth, User } from '@angular/fire/auth';
 import {
   addDoc,
   collection,
@@ -28,26 +28,33 @@ import { Task } from '../../models/tasks';
   providedIn: 'root',
 })
 export class TaskService {
-  afAuth = inject(Auth);
-  firestore = inject(Firestore);
+  private afAuth = inject(Auth);
+  private firestore = inject(Firestore);
   private collectionName = 'tasks';
 
-  // BehaviorSubject to capture search string input
-  private searchSubject = new BehaviorSubject<string>('');
+  private searchSubject = new BehaviorSubject<string>(''); // Search string BehaviorSubject
+  private user: User | null = null; // Store authenticated user
 
-  // Function to update search term
+  // Observe and cache authentication state once
+  private user$ = new Observable<User | null>((observer) => {
+    this.afAuth.onAuthStateChanged((user) => {
+      this.user = user; // Cache the user
+      observer.next(user);
+    });
+  });
+
+  constructor() {}
+
   updateSearch(searchString: string) {
     this.searchSubject.next(searchString);
   }
 
-  constructor() {}
-
+  // Get task by ID
   async getTaskById(id: string): Promise<Task | undefined> {
-    const user = this.afAuth.currentUser;
-    if (user && user.uid) {
+    if (this.user && this.user.uid) {
       const taskDoc = doc(
         this.firestore,
-        `users/${user.uid}/${this.collectionName}/${id}`
+        `users/${this.user.uid}/${this.collectionName}/${id}`
       );
       const docSnapshot = await getDoc(taskDoc);
       if (docSnapshot.exists()) {
@@ -57,30 +64,29 @@ export class TaskService {
     return undefined;
   }
 
+  // Get the highest task order
   async getMaxOrder(): Promise<number | undefined> {
-    const user = this.afAuth.currentUser;
-    if (user && user.uid) {
+    if (this.user && this.user.uid) {
       const tasksCollection = collection(
         this.firestore,
-        `users/${user.uid}/${this.collectionName}`
+        `users/${this.user.uid}/${this.collectionName}`
       );
       const tasksQuery = query(tasksCollection);
       const querySnapshot = await getDocs(tasksQuery);
       let maxOrder = 0;
       querySnapshot.forEach((doc) => {
         const task = doc.data() as Task;
-        if (maxOrder === undefined || task.order > maxOrder) {
-          maxOrder = task.order;
-        }
+        maxOrder = Math.max(maxOrder, task.order);
       });
       return maxOrder;
     }
     return undefined;
   }
 
+  // Get filtered tasks in real-time
   getFilteredTasks(): Observable<Task[]> {
-    return new Observable<Task[]>((observer) => {
-      this.afAuth.onAuthStateChanged((user) => {
+    return this.user$.pipe(
+      switchMap((user) => {
         if (user && user.uid) {
           const tasksCollection = collection(
             this.firestore,
@@ -88,7 +94,6 @@ export class TaskService {
           );
           const tasksQuery = query(tasksCollection);
 
-          // Real-time task fetching and search integration
           const tasksObservable = new Observable<Task[]>((tasksObserver) => {
             onSnapshot(
               tasksQuery,
@@ -102,172 +107,117 @@ export class TaskService {
             );
           });
 
-          // Combine task fetching with search string filtering
-          combineLatest([tasksObservable, this.searchSubject.asObservable()])
-            .pipe(
-              map(([tasks, searchString]) => {
-                return tasks.filter((task: Task) =>
-                  task.title.toLowerCase().includes(searchString.toLowerCase())
-                );
-              })
-            )
-            .subscribe(
-              (filteredTasks) => observer.next(filteredTasks),
-              (error) => observer.error(error)
-            );
+          // Combine tasks and search filtering
+          return combineLatest([
+            tasksObservable,
+            this.searchSubject.asObservable(),
+          ]).pipe(
+            debounceTime(300),
+            distinctUntilChanged(),
+            map(([tasks, searchString]) => {
+              return tasks.filter((task: Task) =>
+                task.title.toLowerCase().includes(searchString.toLowerCase())
+              );
+            })
+          );
         } else {
-          observer.next([]);
+          return new Observable<Task[]>((observer) => observer.next([]));
         }
-      });
-    });
+      })
+    );
   }
 
+  // Add task
   addTask(task: Task) {
     return new Promise<void>((resolve, reject) => {
-      this.afAuth.onAuthStateChanged((user) => {
-        if (user && user.uid) {
-          const tasksCollection = collection(
-            this.firestore,
-            `users/${user.uid}/${this.collectionName}`
-          );
-          addDoc(tasksCollection, task)
-            .then(() => resolve())
-            .catch((error: any) => reject(error));
-        } else {
-          reject(new Error('User not authenticated'));
-        }
-      });
+      if (this.user && this.user.uid) {
+        const tasksCollection = collection(
+          this.firestore,
+          `users/${this.user.uid}/${this.collectionName}`
+        );
+        addDoc(tasksCollection, task)
+          .then(() => resolve())
+          .catch(reject);
+      } else {
+        reject(new Error('User not authenticated'));
+      }
     });
   }
 
+  // Update task
   updateTask(task: Task) {
     return new Promise<void>((resolve, reject) => {
-      this.afAuth.onAuthStateChanged((user) => {
-        if (user && user.uid) {
-          if (!task.uid) {
-            reject(new Error('Task ID is required for updating'));
-            return;
-          }
-          const taskDoc = doc(
-            this.firestore,
-            `users/${user.uid}/${this.collectionName}/${task.uid}`
-          );
-          updateDoc(taskDoc, { ...task })
-            .then(() => resolve())
-            .catch((error: any) => reject(error));
-        } else {
-          reject(new Error('User not authenticated'));
-        }
-      });
+      if (this.user && this.user.uid && task.uid) {
+        const taskDoc = doc(
+          this.firestore,
+          `users/${this.user.uid}/${this.collectionName}/${task.uid}`
+        );
+        updateDoc(taskDoc, { ...task })
+          .then(resolve)
+          .catch(reject);
+      } else {
+        reject(new Error('User not authenticated or Task ID is missing'));
+      }
     });
   }
 
+  // Reorder tasks
   reorderTasks(task1: Task, task2: Task) {
     return new Promise<void>((resolve, reject) => {
-      this.afAuth.onAuthStateChanged((user) => {
-        if (user && user.uid) {
-          const batch = writeBatch(this.firestore);
-          const task1Ref = doc(
-            this.firestore,
-            `users/${user.uid}/${this.collectionName}/${task1.uid}`
-          );
-          const task2Ref = doc(
-            this.firestore,
-            `users/${user.uid}/${this.collectionName}/${task2.uid}`
-          );
+      if (this.user && this.user.uid) {
+        const batch = writeBatch(this.firestore);
+        const task1Ref = doc(
+          this.firestore,
+          `users/${this.user.uid}/${this.collectionName}/${task1.uid}`
+        );
+        const task2Ref = doc(
+          this.firestore,
+          `users/${this.user.uid}/${this.collectionName}/${task2.uid}`
+        );
+        batch.update(task1Ref, { order: task1.order });
+        batch.update(task2Ref, { order: task2.order });
 
-          batch.update(task1Ref, { order: task1.order });
-          batch.update(task2Ref, { order: task2.order });
-
-          batch
-            .commit()
-            .then(() => resolve())
-            .catch((error) => reject(error));
-        } else {
-          reject(new Error('User not authenticated'));
-        }
-      });
+        batch.commit().then(resolve).catch(reject);
+      } else {
+        reject(new Error('User not authenticated'));
+      }
     });
   }
+
+  // Delete task
   deleteTask(id: string) {
     return new Promise<void>((resolve, reject) => {
-      this.afAuth.onAuthStateChanged((user) => {
-        if (user && user.uid) {
-          const taskDoc = doc(
-            this.firestore,
-            `users/${user.uid}/${this.collectionName}/${id}`
-          );
-          deleteDoc(taskDoc)
-            .then(() => resolve())
-            .catch((error) => reject(error));
-        } else {
-          reject(new Error('User not authenticated'));
-        }
-      });
+      if (this.user && this.user.uid) {
+        const taskDoc = doc(
+          this.firestore,
+          `users/${this.user.uid}/${this.collectionName}/${id}`
+        );
+        deleteDoc(taskDoc).then(resolve).catch(reject);
+      } else {
+        reject(new Error('User not authenticated'));
+      }
     });
   }
 
+  // Delete all tasks
   deleteAllTasks() {
     return new Promise<void>((resolve, reject) => {
-      this.afAuth.onAuthStateChanged(async (user) => {
-        if (user && user.uid) {
-          try {
-            const tasksCollection = collection(
-              this.firestore,
-              `users/${user.uid}/${this.collectionName}`
-            );
-            const tasksSnapshot = await getDocs(tasksCollection);
-
+      if (this.user && this.user.uid) {
+        const tasksCollection = collection(
+          this.firestore,
+          `users/${this.user.uid}/${this.collectionName}`
+        );
+        getDocs(tasksCollection)
+          .then((tasksSnapshot) => {
             const batch = writeBatch(this.firestore);
-            tasksSnapshot.forEach((doc) => {
-              batch.delete(doc.ref);
-            });
-
-            await batch.commit();
-            resolve();
-          } catch (error) {
-            console.error('Error deleting tasks:', error);
-            reject(error);
-          }
-        }
-      });
+            tasksSnapshot.forEach((doc) => batch.delete(doc.ref));
+            return batch.commit();
+          })
+          .then(resolve)
+          .catch(reject);
+      } else {
+        reject(new Error('User not authenticated'));
+      }
     });
-  }
-
-  searchTasks(searchString: string): Observable<Task[]> {
-    return new Observable<Task[]>((observer) => {
-      this.afAuth.onAuthStateChanged((user) => {
-        if (user && user.uid) {
-          // Query tasks collection from Firebase Firestore
-          const tasksCollection = collection(
-            this.firestore,
-            `users/${user.uid}/${this.collectionName}`
-          );
-          const tasksQuery = query(tasksCollection);
-
-          // Listen to changes in Firestore and apply search filter
-          onSnapshot(
-            tasksQuery,
-            (querySnapshot) => {
-              // Get all tasks and filter based on searchString
-              const filteredTasks: Task[] = querySnapshot.docs
-                .map((doc) => ({ uid: doc.id, ...doc.data() } as Task))
-                .filter((task) =>
-                  task.title.toLowerCase().includes(searchString.toLowerCase())
-                );
-
-              // Emit the filtered tasks
-              observer.next(filteredTasks);
-            },
-            (error) => observer.error(error)
-          );
-        } else {
-          observer.next([]); // If user not authenticated, return empty list
-        }
-      });
-    }).pipe(
-      debounceTime(300), // Debounce to prevent too many queries
-      distinctUntilChanged() // Only search when input changes
-    );
   }
 }
