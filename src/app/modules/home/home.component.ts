@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/firebase/auth.service';
+import { LocalstorageService } from 'src/app/services/local.storage.service';
 import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
@@ -11,6 +12,7 @@ export class HomeComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private toastService: ToastService,
+    private localStorage: LocalstorageService,
     private router: Router
   ) {}
 
@@ -19,7 +21,8 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     if (
-      JSON.parse(localStorage.getItem('tasks') ?? '[]').length > 0 ||
+      (this.localStorage.isLocal &&
+        JSON.parse(localStorage.getItem('tasks') ?? '[]').length > 0) ||
       JSON.parse(localStorage.getItem('groups') ?? '[]').length > 0
     ) {
       this.switchMessage = `<b class="text-gray-500">Hey</b>, You have some data in your local storage, do you want to sync it to the online version.`;
@@ -41,5 +44,6 @@ export class HomeComponent implements OnInit {
       localStorage.removeItem('tasks');
       localStorage.removeItem('groups');
     }
+    this.showModal = false;
   }
 }
