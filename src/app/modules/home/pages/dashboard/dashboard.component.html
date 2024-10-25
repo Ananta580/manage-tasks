@@ -1,11 +1,11 @@
-<div class="fade-in flex overflow-clip bg-black bg-opacity-5 min-h-[calc(100vh-4rem)]">
+<div class="fade-in flex max-sm:flex-col bg-black bg-opacity-5 min-h-[calc(100vh-4rem)]">
   <!-- Side bar -->
   <aside
     class="flex max-sm:hidden flex-col min-w-[208px] max-ls:w-64 max-md:w-52 w-72 bg-gradient-to-t bg-white py-6 h-[calc(100vh-4rem)]">
     <div class="flex flex-col">
       <div (click)="changeTaskType(tab.key)" *ngFor="let tab of tabs" [ngClass]="
           tab.key === selectedTab
-            ? 'rounded-full !border-black bg-emerald-800 text-white'
+            ? 'rounded-full border-emerald-800 bg-emerald-800 text-white'
             : 'text-slate-400 hover:text-black transition-all delay-150'
         " class="p-3 mx-5 border-1 border-transparent rounded-md cursor-pointer font-normal flex gap-2">
         <span class="material-symbols-outlined" [ngClass]="tab.key === selectedTab ? 'fill' : ''">
@@ -20,6 +20,31 @@
             : 'text-gray-400  hover:text-black transition-all delay-150'
         " class="p-3 rounded-md cursor-pointer font-normal flex gap-2">
         <span class="material-symbols-outlined" [ngClass]="tab.key === selectedSortTab ? 'fill' : ''">
+          {{ tab.icon }} </span>{{ tab.title }}
+      </div>
+    </div>
+  </aside>
+
+  <!-- Small screen sidebar/ topbar -->
+  <aside class="max-sm:flex hidden flex-col bg-gradient-to-t bg-white p-5">
+    <div class="flex flex-wrap items-center gap-2">
+      <div (click)="changeTaskType(tab.key)" *ngFor="let tab of tabs" [ngClass]="
+        tab.key === selectedTab
+          ? ' border-emerald-800 bg-emerald-800  text-white font-medium'
+          : 'text-gray-400 hover:text-black transition-all delay-150'
+      " class="px-4 border rounded-full text-xs cursor-pointer font-normal flex gap-2 h-fit items-center">
+        <span class="material-symbols-outlined text-lg" [ngClass]="tab.key === selectedTab ? 'fill' : ''">
+          {{ tab.icon }} </span>{{ tab.title }}
+      </div>
+    </div>
+    <div class="pt-4 flex flex-wrap items-center gap-2">
+      <span class=" text-xs text-gray-800">SORT BY: </span>
+      <div (click)="changeSortType(tab.key)" *ngFor="let tab of sortTabs" [ngClass]="
+        tab.key === selectedSortTab
+          ? 'bg-emerald-800 border-emerald-800 text-white font-medium'
+          : 'text-gray-400  hover:text-black transition-all delay-150'
+      " class="px-2 border rounded-full text-xs cursor-pointer font-normal flex gap-2 h-fit items-center">
+        <span class="material-symbols-outlined text-lg" [ngClass]="tab.key === selectedSortTab ? 'fill' : ''">
           {{ tab.icon }} </span>{{ tab.title }}
       </div>
     </div>

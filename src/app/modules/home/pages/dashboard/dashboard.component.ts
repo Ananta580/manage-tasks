@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { map, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { Task } from 'src/app/models/tasks';
 import { LocalstorageService } from 'src/app/services/local.storage.service';
 import { TaskStorageService } from 'src/app/services/task.storage.service';
@@ -105,7 +105,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const prevIndex = event.previousIndex;
     const currentIndex = event.currentIndex;
 
-    const sth = this.tasks$.subscribe((res) => {
+    this.tasks$.pipe(take(1)).subscribe((res) => {
       const prevItem = res[prevIndex];
       const currentItem = res[currentIndex];
 
@@ -114,7 +114,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       currentItem.order = tempOrder;
 
       this.taskService.reorderTasks(prevItem, currentItem);
-      sth.unsubscribe();
     });
   }
 

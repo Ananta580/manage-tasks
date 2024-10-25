@@ -99,12 +99,12 @@ export class TaskStorageService {
         return;
       }
 
-      // Swap tasks
       const newTasks = [...currentTasks];
       newTasks[prevIndex] = current;
       newTasks[currentIndex] = prev;
 
       localStorage.setItem('tasks', JSON.stringify(newTasks));
+      this.tasksSubject.next(newTasks);
     } else {
       this.taskService.reorderTasks(prev, current);
     }

@@ -27,8 +27,6 @@ export class HomeComponent implements OnInit {
     ) {
       this.switchMessage = `<b class="text-gray-500">Hey</b>, You have some data in your local storage, do you want to sync it to the online version.`;
       this.showModal = true;
-      return;
-    } else {
       this.switchOnline(false);
     }
   }
