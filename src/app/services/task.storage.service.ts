@@ -1,10 +1,9 @@
 // src/app/services/task.service.ts
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, debounceTime } from 'rxjs';
 import { TaskService } from './firebase/task.service';
 import { Task } from '../models/tasks';
 import { LocalstorageService } from './local.storage.service';
-import { uid } from 'uid';
 
 @Injectable({
   providedIn: 'root',
@@ -111,13 +110,22 @@ export class TaskStorageService {
     }
   }
 
-  searchTasks(searchString: string): Array<Task> {
-    const filteredTasks = this.tasksSubject.value.filter(
-      (task) =>
-        task.title?.toLowerCase().includes(searchString.toLowerCase()) ||
-        task.description?.toLowerCase().includes(searchString.toLowerCase())
-    );
-    return filteredTasks;
+  searchTasks(searchString: string) {
+    if (this.localStore.isLocal) {
+      const allTasks = JSON.parse(localStorage.getItem('tasks') ?? '[]');
+      const filteredTasks = allTasks.filter(
+        (task: Task) =>
+          task.title?.toLowerCase().includes(searchString.toLowerCase()) ||
+          task.description?.toLowerCase().includes(searchString.toLowerCase())
+      );
+      this.tasksSubject.next(filteredTasks);
+    } else {
+      this.taskService.getTasks(searchString);
+      // .pipe(debounceTime(300))
+      // .subscribe((filteredTasks: Task[]) => {
+      //   this.tasksSubject.next(filteredTasks);
+      // });
+    }
   }
 
   nullifyTask() {

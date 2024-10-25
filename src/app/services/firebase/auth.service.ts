@@ -123,7 +123,7 @@ export class AuthService {
       'auth/operation-not-allowed':
         'Login with email and password is not enabled. Please contact support.',
     };
-
+    console.log(error);
     const message =
       errorMessages[error.code] ||
       'An unknown error occurred. Please try again.';

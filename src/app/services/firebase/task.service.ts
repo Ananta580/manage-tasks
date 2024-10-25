@@ -13,15 +13,8 @@ import {
   updateDoc,
   writeBatch,
 } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Observable } from 'rxjs';
 import { Task } from '../../models/tasks';
-import {
-  EmailAuthProvider,
-  GoogleAuthProvider,
-  reauthenticateWithCredential,
-  reauthenticateWithPopup,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -69,7 +62,7 @@ export class TaskService {
     return undefined;
   }
 
-  getTasks(): Observable<Task[]> {
+  getTasks(searchString: string = ''): Observable<Task[]> {
     return new Observable<Task[]>((observer) => {
       this.afAuth.onAuthStateChanged((user) => {
         if (user && user.uid) {
@@ -81,9 +74,11 @@ export class TaskService {
           onSnapshot(
             tasksQuery,
             (querySnapshot) => {
-              const tasks: Task[] = querySnapshot.docs.map(
-                (doc) => ({ uid: doc.id, ...doc.data() } as Task)
-              );
+              const tasks: Task[] = querySnapshot.docs
+                .map((doc) => ({ uid: doc.id, ...doc.data() } as Task))
+                .filter((task) =>
+                  task.title.toLowerCase().includes(searchString.toLowerCase())
+                );
               observer.next(tasks);
             },
             (error) => observer.error(error)
@@ -205,5 +200,33 @@ export class TaskService {
         }
       });
     });
+  }
+
+  searchTasks(searchString: string): Observable<Task[]> {
+    return new Observable<Task[]>((observer) => {
+      this.afAuth.onAuthStateChanged((user) => {
+        if (user && user.uid) {
+          const tasksCollection = collection(
+            this.firestore,
+            `users/${user.uid}/${this.collectionName}`
+          );
+          const tasksQuery = query(tasksCollection);
+          onSnapshot(
+            tasksQuery,
+            (querySnapshot) => {
+              const tasks: Task[] = querySnapshot.docs
+                .map((doc) => ({ uid: doc.id, ...doc.data() } as Task))
+                .filter((task) =>
+                  task.title.toLowerCase().includes(searchString.toLowerCase())
+                );
+              observer.next(tasks);
+            },
+            (error) => observer.error(error)
+          );
+        } else {
+          observer.next([]);
+        }
+      });
+    }).pipe(debounceTime(300), distinctUntilChanged());
   }
 }
