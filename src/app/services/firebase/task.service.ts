@@ -13,7 +13,15 @@ import {
   updateDoc,
   writeBatch,
 } from '@angular/fire/firestore';
-import { debounceTime, distinctUntilChanged, Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  Observable,
+  switchMap,
+} from 'rxjs';
 import { Task } from '../../models/tasks';
 
 @Injectable({
@@ -23,6 +31,14 @@ export class TaskService {
   afAuth = inject(Auth);
   firestore = inject(Firestore);
   private collectionName = 'tasks';
+
+  // BehaviorSubject to capture search string input
+  private searchSubject = new BehaviorSubject<string>('');
+
+  // Function to update search term
+  updateSearch(searchString: string) {
+    this.searchSubject.next(searchString);
+  }
 
   constructor() {}
 
@@ -62,7 +78,7 @@ export class TaskService {
     return undefined;
   }
 
-  getTasks(searchString: string = ''): Observable<Task[]> {
+  getFilteredTasks(): Observable<Task[]> {
     return new Observable<Task[]>((observer) => {
       this.afAuth.onAuthStateChanged((user) => {
         if (user && user.uid) {
@@ -71,18 +87,34 @@ export class TaskService {
             `users/${user.uid}/${this.collectionName}`
           );
           const tasksQuery = query(tasksCollection);
-          onSnapshot(
-            tasksQuery,
-            (querySnapshot) => {
-              const tasks: Task[] = querySnapshot.docs
-                .map((doc) => ({ uid: doc.id, ...doc.data() } as Task))
-                .filter((task) =>
+
+          // Real-time task fetching and search integration
+          const tasksObservable = new Observable<Task[]>((tasksObserver) => {
+            onSnapshot(
+              tasksQuery,
+              (querySnapshot) => {
+                const tasks: Task[] = querySnapshot.docs.map(
+                  (doc) => ({ uid: doc.id, ...doc.data() } as Task)
+                );
+                tasksObserver.next(tasks);
+              },
+              (error) => tasksObserver.error(error)
+            );
+          });
+
+          // Combine task fetching with search string filtering
+          combineLatest([tasksObservable, this.searchSubject.asObservable()])
+            .pipe(
+              map(([tasks, searchString]) => {
+                return tasks.filter((task: Task) =>
                   task.title.toLowerCase().includes(searchString.toLowerCase())
                 );
-              observer.next(tasks);
-            },
-            (error) => observer.error(error)
-          );
+              })
+            )
+            .subscribe(
+              (filteredTasks) => observer.next(filteredTasks),
+              (error) => observer.error(error)
+            );
         } else {
           observer.next([]);
         }
@@ -206,27 +238,36 @@ export class TaskService {
     return new Observable<Task[]>((observer) => {
       this.afAuth.onAuthStateChanged((user) => {
         if (user && user.uid) {
+          // Query tasks collection from Firebase Firestore
           const tasksCollection = collection(
             this.firestore,
             `users/${user.uid}/${this.collectionName}`
           );
           const tasksQuery = query(tasksCollection);
+
+          // Listen to changes in Firestore and apply search filter
           onSnapshot(
             tasksQuery,
             (querySnapshot) => {
-              const tasks: Task[] = querySnapshot.docs
+              // Get all tasks and filter based on searchString
+              const filteredTasks: Task[] = querySnapshot.docs
                 .map((doc) => ({ uid: doc.id, ...doc.data() } as Task))
                 .filter((task) =>
                   task.title.toLowerCase().includes(searchString.toLowerCase())
                 );
-              observer.next(tasks);
+
+              // Emit the filtered tasks
+              observer.next(filteredTasks);
             },
             (error) => observer.error(error)
           );
         } else {
-          observer.next([]);
+          observer.next([]); // If user not authenticated, return empty list
         }
       });
-    }).pipe(debounceTime(300), distinctUntilChanged());
+    }).pipe(
+      debounceTime(300), // Debounce to prevent too many queries
+      distinctUntilChanged() // Only search when input changes
+    );
   }
 }

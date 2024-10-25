@@ -21,7 +21,7 @@ export class TaskStorageService {
     if (this.localStore.isLocal) {
       this.tasksSubject.next(JSON.parse(localStorage.getItem('tasks') ?? '[]'));
     } else {
-      this.tasks$ = this.taskService.getTasks();
+      this.tasks$ = this.taskService.getFilteredTasks();
     }
   }
 
@@ -120,11 +120,7 @@ export class TaskStorageService {
       );
       this.tasksSubject.next(filteredTasks);
     } else {
-      this.taskService.getTasks(searchString);
-      // .pipe(debounceTime(300))
-      // .subscribe((filteredTasks: Task[]) => {
-      //   this.tasksSubject.next(filteredTasks);
-      // });
+      this.taskService.updateSearch(searchString);
     }
   }
 
