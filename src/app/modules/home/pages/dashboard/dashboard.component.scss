@@ -38,3 +38,21 @@
   background-repeat: no-repeat; /* Ensure background does not repeat */
   background-position: left; /* Start from the left */
 }
+
+
+input#search {
+  background-image: url(../../../../../assets/search.png);
+  background-position: 10px;
+  background-repeat: no-repeat;
+  background-size: 18px 18px;
+  text-indent: 20px;
+}
+
+::-webkit-input-placeholder {
+  color: rgb(183, 183, 183);
+}
+
+input#search:focus {
+  background-image: none;
+  text-indent: 0;
+}

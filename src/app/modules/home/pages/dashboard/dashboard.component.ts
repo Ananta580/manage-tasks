@@ -34,7 +34,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     private taskService: TaskStorageService,
-    private router: Router,
+    public router: Router,
     private localStorage: LocalstorageService
   ) {}
 
@@ -135,5 +135,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   deleteTask(task: Task): void {
     this.taskService.deleteTask(task);
     this.closeMenu();
+  }
+
+  searchTask(input: any) {
+    this.taskService.searchTasks(input.target.value.toLowerCase());
   }
 }

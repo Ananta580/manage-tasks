@@ -27,15 +27,17 @@
 
   <!-- Small screen sidebar/ topbar -->
   <aside class="max-sm:flex hidden flex-col bg-gradient-to-t bg-white p-5">
-    <div class="flex flex-wrap items-center gap-2">
+    <div class="flex overflow-x-scroll items-center gap-2">
       <div (click)="changeTaskType(tab.key)" *ngFor="let tab of tabs" [ngClass]="
         tab.key === selectedTab
           ? ' border-emerald-800 bg-emerald-800  text-white font-medium'
           : 'text-gray-400 hover:text-black transition-all delay-150'
-      " class="px-4 border rounded-full text-xs cursor-pointer font-normal flex gap-2 h-fit items-center">
+      " class="px-4 border rounded-full text-xs cursor-pointer min-w-[90px] font-normal flex gap-2 h-fit items-center">
         <span class="material-symbols-outlined text-lg" [ngClass]="tab.key === selectedTab ? 'fill' : ''">
           {{ tab.icon }} </span>{{ tab.title }}
       </div>
+      <input id="search" placeholder="Search" (input)="searchTask($event)" *ngIf="router.url === '/app'"
+        class="p-2 text-xs px-5 bg-white w-auto text-gray-500 border border-gray-200 rounded-full outline-none" />
     </div>
     <div class="pt-4 flex flex-wrap items-center gap-2">
       <span class=" text-xs text-gray-800">SORT BY: </span>
