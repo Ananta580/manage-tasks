@@ -2,12 +2,15 @@
 module.exports = {
   content: ["./src/**/*.{html,ts}"],
   darkMode: "class",
-  theme: {},
-  variants: {
+  theme: {
     extend: {
       screens: {
         ls: "900px",
       },
+    },
+  },
+  variants: {
+    extend: {
       brightness: ["dark"],
     },
   },

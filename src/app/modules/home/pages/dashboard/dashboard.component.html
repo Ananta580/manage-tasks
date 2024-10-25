@@ -1,6 +1,7 @@
-<div class="fade-in flex gap-3</ng-template> overflow-y-auto bg-black bg-opacity-5 min-h-[calc(100vh-4rem)]">
+<div class="fade-in flex overflow-y-auto bg-black bg-opacity-5 min-h-[calc(100vh-4rem)]">
   <!-- Side bar -->
-  <section class="flex fixed flex-col w-auto min-w-[250px] bg-gradient-to-t bg-white pt-6 h-[calc(100%)] rounded-md">
+  <aside
+    class="flex max-sm:hidden flex-col min-w-[208px] max-ls:w-64 max-md:w-52 w-72 bg-gradient-to-t bg-white py-6 h-[calc(100vh-4rem)]">
     <div class="flex flex-col">
       <div (click)="changeTaskType(tab.key)" *ngFor="let tab of tabs" [ngClass]="
           tab.key === selectedTab
@@ -22,14 +23,14 @@
           {{ tab.icon }} </span>{{ tab.title }}
       </div>
     </div>
-  </section>
+  </aside>
 
   <!-- Main container -->
-  <section class="ml-[250px] p-6 pt-3 flex w-full flex-col">
+  <section class="p-6 flex flex-grow flex-col  max-ls:p-5">
     <div *ngIf="tasks$ | async as tasks; else loadingTemplate">
       <div cdkDropList (cdkDropListDropped)="drop($event)" *ngIf="tasks.length > 0; else emptyTemplate">
         <div cdkDrag [ngClass]="{'animate':task.animate}"
-          class="p-4 rounded-lg border mt-3 border-gray-100 flex w-full justify-between items-center bg-white hover:bg-gray-50 hover:cursor-pointer"
+          class="p-4 gap-1 rounded-lg border mt-3 first:mt-0 border-gray-100 flex w-full justify-between items-start bg-white hover:bg-gray-50 hover:cursor-pointer"
           *ngFor="let task of tasks">
 
           <!-- Task Details -->
@@ -38,23 +39,23 @@
             <span (click)="changeStatus(task)" [ngClass]="{
              'text-emerald-600': task.done,
              'text-gray-300 hover:text-emerald-500': !task.done
-             }" class="material-symbols-outlined text-2xl cursor-pointer transition duration-200">
+             }" class="material-symbols-outlined text-2xl -mt-2 cursor-pointer transition duration-200">
               {{ task.done ? "check_circle" : "radio_button_unchecked" }}
             </span>
 
             <!-- Title & Description -->
-            <div class="flex flex-col">
-              <span class="flex gap-2 items-center">{{task.order}} |
+            <div class="flex flex-col gap-1">
+              <div class="flex flex-wrap gap-x-2 gap-y-1 items-center">
                 <span *ngIf="task.group" style="letter-spacing: 0.6px" [style.background]="task.group?.color"
-                  class="text-xs text-white px-2 py-1 rounded-full"> {{ task.group?.name }}</span>
-                <span class="font-semibold text-lg text-gray-800">{{ task.title }}</span>
-              </span>
-              <span class="text-gray-600">{{ task.description }}</span>
+                  class="text-xs text-white min-w-fit px-2 py-[2px] rounded-full"> {{ task.group?.name }}</span>
+                <span class="font-medium text-base leading-5 text-gray-800">{{ task.title }}</span>
+              </div>
+              <span class="text-gray-600 text-sm">{{ task.description }}</span>
             </div>
           </div>
 
           <!-- Action Buttons -->
-          <div class="relative flex items-center gap-2">
+          <div class="relative flex items-center gap-2 -mt-2 -mr-2">
             <!-- Options Button -->
             <button cdkOverlayOrigin #trigger="cdkOverlayOrigin" (click)="toggleMenu(task)"
               class="flex items-center justify-center p-1 rounded-md text-gray-400 hover:bg-gray-200 transition duration-300 ease-in-out focus:outline-none">
@@ -115,7 +116,7 @@
 
 
 <ng-template #loadingTemplate>
-  <div class="flex flex-col gap-4 mt-3">
+  <div class="flex flex-col gap-4">
     <div class="animate-pulse flex space-x-4 p-4 rounded-lg border border-gray-100 bg-white">
       <div class="rounded-full bg-gray-200 h-8 w-8"></div>
       <div class="flex-1 space-y-4 py-1">

@@ -33,7 +33,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   currentDate$?: Observable<Date> = this.dateSubject;
   private subscription?: Subscription;
   constructor(
-    private router: Router,
+    public router: Router,
     private toastService: ToastService,
     private taskService: TaskStorageService,
     private localStorage: LocalstorageService,
