@@ -40,13 +40,10 @@ export class LoginComponent {
         .then((auth) => {
           if (auth) {
             this.localStorage.isLocal = false;
-            if (JSON.parse(localStorage.getItem('tasks') ?? '[]').length > 0) {
-              this.switchMessage = `Hey <b class="text-gray-500">${this.loginForm.value?.email}</b>, You have some data in your local storage, do you want to sync it to the online version.`;
-              this.showModal = true;
-              return;
-            } else {
-              this.switchOnline(false);
-            }
+            this.toastService.showSuccess(
+              'Welcome back! You have successfully logged in.'
+            );
+            this.router.navigate(['/']);
           }
         })
         .catch((error) => {
@@ -70,10 +67,6 @@ export class LoginComponent {
     } else {
       localStorage.removeItem('tasks');
       localStorage.removeItem('groups');
-      this.toastService.showSuccess(
-        'Welcome back! You have successfully logged in.'
-      );
-      this.router.navigate(['/']);
     }
   }
 }
