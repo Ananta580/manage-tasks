@@ -21,7 +21,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     if (
-      (this.localStorage.isLocal &&
+      (!this.localStorage.isLocal &&
         JSON.parse(localStorage.getItem('tasks') ?? '[]').length > 0) ||
       JSON.parse(localStorage.getItem('groups') ?? '[]').length > 0
     ) {

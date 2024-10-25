@@ -15,7 +15,7 @@ import { AngularFireModule } from '@angular/fire/compat';
   imports: [
     BrowserModule,
     FormsModule,
-    RouterModule,
+    RouterModule.forRoot([], { scrollPositionRestoration: 'top' }),
     ReactiveFormsModule,
     BrowserAnimationsModule,
     AngularFireModule.initializeApp(environment.firebase),
